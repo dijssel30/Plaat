@@ -16,8 +16,8 @@ Features:
 ## Screenshots
 ![Artist overview](images/artist-view.png)
 ![Album overview](images/album-view.png)
-![All albums](images/all-album.png)
-![Create smart playlist](imagescreate-playlist.png)
+![All albums](images/all-albums.png)
+![Create smart playlist](images/create-playlist.png)
 
 ## Getting Started
 
