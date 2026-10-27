@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="10.1.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Shouldly" Version="4.3.0" />
+        <PackageReference Include="NSubstitute" Version="6.2.0" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    </ItemGroup>
+
+    <!--
+        Plaat.Mobile only targets mobile TFMs (net10.0-android etc.), which a plain net10.0 test
+        project can't ProjectReference. These files have no actual Microsoft.Maui.* dependency
+        though (just CommunityToolkit.Mvvm + Plaat.Contract), so their real source files are linked
+        in directly rather than duplicated - keeps them testable with a normal, fast, device-free
+        `dotnet test` run instead of needing Android test infrastructure.
+    -->
+    <ItemGroup>
+        <Compile Include="..\..\src\Plaat.Mobile\Services\Player\PlayerQueueService.cs" Link="Linked\PlayerQueueService.cs" />
+        <Compile Include="..\..\src\Plaat.Mobile\Services\Auth\AccessTokenGate.cs" Link="Linked\AccessTokenGate.cs" />
+        <Compile Include="..\..\src\Plaat.Mobile\Services\Compatibility\AppCompatibilityChecker.cs" Link="Linked\AppCompatibilityChecker.cs" />
+        <Compile Include="..\..\src\Plaat.Mobile\ViewModels\TrackDiscGroup.cs" Link="Linked\TrackDiscGroup.cs" />
+        <Compile Include="..\..\src\Plaat.Mobile\ViewModels\AlbumTrackGrouping.cs" Link="Linked\AlbumTrackGrouping.cs" />
+        <Compile Include="..\..\src\Plaat.Mobile\ViewModels\DiscogsSummary.cs" Link="Linked\DiscogsSummary.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Plaat.Contract\Plaat.Contract.csproj" />
+    </ItemGroup>
+
+</Project>

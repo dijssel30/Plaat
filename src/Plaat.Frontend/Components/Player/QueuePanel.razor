@@ -1,0 +1,71 @@
+<div class="queue-panel-wrapper" @ref="_wrapperRef">
+    <button @onclick="ToggleOpen" title="Queue" class="queue-toggle @(IsOpen ? "active" : "")">
+        <span class="icon icon-queue"></span>
+    </button>
+
+    @if (IsOpen)
+    {
+        <div class="queue-panel">
+            <div class="queue-panel-header">
+                <button class="queue-tab @(!_showHistory ? "active" : "")" @onclick="() => SetTab(false)">Up Next</button>
+                <button class="queue-tab @(_showHistory ? "active" : "")" @onclick="() => SetTab(true)">Previous</button>
+                <button class="queue-panel-close" @onclick="ToggleOpen" title="Close">
+                    <span class="icon icon-close"></span>
+                </button>
+            </div>
+            <div class="queue-panel-list">
+                @{
+                    var entries = Entries;
+                }
+                @if (entries.Count == 0)
+                {
+                    <div class="queue-panel-empty">@(_showHistory ? "No previous tracks" : "Queue is empty")</div>
+                }
+                else
+                {
+                    <Virtualize Items="entries" Context="index" ItemSize="48">
+                        @{
+                            var track = MusicPlayList[index];
+                            var isCurrent = index == MusicPlayList.CurrentIndex;
+                        }
+                        @{
+                            var canReorder = CanReorder(index);
+                        }
+                        <div @key="index"
+                             class="queue-panel-row @(isCurrent ? "active" : "") @(canReorder ? "reorderable" : "") @RowClass(index)"
+                             draggable="@(canReorder ? "true" : "false")"
+                             @ondragstart="() => OnDragStart(index)"
+                             @ondragover="() => OnDragOver(index)"
+                             @ondragover:preventDefault
+                             @ondrop="() => OnDrop(index)"
+                             @ondrop:preventDefault
+                             @ondragend="OnDragEnd"
+                             @onclick="() => Play(index)">
+                            @if (isCurrent)
+                            {
+                                <span class="icon @(MusicPlayList.IsPlaying ? "icon-play" : "icon-pause") now-playing-icon"></span>
+                            }
+                            else if (canReorder)
+                            {
+                                <span class="queue-panel-drag-handle" title="Drag to reorder">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                                        <circle cx="8" cy="6" r="1.6" fill="currentColor" />
+                                        <circle cx="16" cy="6" r="1.6" fill="currentColor" />
+                                        <circle cx="8" cy="12" r="1.6" fill="currentColor" />
+                                        <circle cx="16" cy="12" r="1.6" fill="currentColor" />
+                                        <circle cx="8" cy="18" r="1.6" fill="currentColor" />
+                                        <circle cx="16" cy="18" r="1.6" fill="currentColor" />
+                                    </svg>
+                                </span>
+                            }
+                            <div class="queue-panel-info">
+                                <span class="queue-panel-title">@track.Title</span>
+                                <span class="queue-panel-artist">@track.AllArtists</span>
+                            </div>
+                        </div>
+                    </Virtualize>
+                }
+            </div>
+        </div>
+    }
+</div>

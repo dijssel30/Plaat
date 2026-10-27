@@ -1,0 +1,124 @@
+﻿@page "/playlists"
+@using Plaat.Frontend.Components.Playlists
+
+<PageTitle>Playlists</PageTitle>
+
+<div>
+    <div class="search-bar">
+        <input class="search-input"
+               placeholder="Search playlists..."
+               @bind="_search"
+               @bind:event="oninput"/>
+    </div>
+
+    <div class="toolbar">
+        <button class="toolbar-btn" @onclick="OpenCreatePlaylistModal">+ New Playlist</button>
+        <button class="toolbar-btn toolbar-btn-smart" @onclick="OpenCreateSmartPlaylistModal">+ New Smart Playlist</button>
+    </div>
+
+    <div class="album-list-container">
+        <Virtualize Items="FilteredPlaylists">
+            <div class="album-row playlist-row">
+                <NavLink class="album-link" href="@(GetHref(context.PlaylistName))">
+                    <span class="album-link-text">@context.PlaylistName (@context.TrackCount)</span>
+                </NavLink>
+                <button class="pin-btn @(context.IsPinned ? "active" : "")"
+                        title="@(context.IsPinned ? "Unpin from navigation menu" : "Pin to navigation menu")"
+                        @onclick="() => TogglePin(context)">
+                    <span class="icon icon-pin"></span>
+                </button>
+                <button class="delete-btn"
+                        title="Delete playlist"
+                        @onclick="() => OpenDeleteModal(context)">
+                    <span class="icon icon-trash"></span>
+                </button>
+            </div>
+        </Virtualize>
+    </div>
+</div>
+
+@if (_playlistToDelete is not null)
+{
+    <div class="modal-overlay" @onclick="CloseModals">
+        <div class="modal" @onclick:stopPropagation="true">
+            <h2 class="modal-title">Delete playlist?</h2>
+            <p class="modal-message">Are you sure you want to delete "@_playlistToDelete.PlaylistName"? This cannot be undone.</p>
+            @if (_modalError is not null)
+            {
+                <p class="modal-error">@_modalError</p>
+            }
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" @onclick="CloseModals">Cancel</button>
+                <button class="modal-btn modal-btn-danger" @onclick="ConfirmDeletePlaylist" disabled="@_isSaving">
+                    @(_isSaving ? "Deleting..." : "Delete")
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_showCreatePlaylistModal)
+{
+    <div class="modal-overlay" @onclick="CloseModals">
+        <div class="modal" @onclick:stopPropagation="true">
+            <h2 class="modal-title">New Playlist</h2>
+            <input class="modal-input"
+                   placeholder="Playlist name"
+                   @bind="_newPlaylistName"
+                   @bind:event="oninput"
+                   @onkeydown="OnPlaylistNameKeyDown"/>
+            @if (_modalError is not null)
+            {
+                <p class="modal-error">@_modalError</p>
+            }
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" @onclick="CloseModals">Cancel</button>
+                <button class="modal-btn modal-btn-ok" @onclick="ConfirmCreatePlaylist" disabled="@_isSaving">
+                    @(_isSaving ? "Creating..." : "OK")
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_showCreateSmartPlaylistModal)
+{
+    <div class="modal-overlay" @onclick="CloseModals">
+        <div class="modal modal-smart" @onclick:stopPropagation="true">
+            <h2 class="modal-title">New Smart Playlist</h2>
+            <input class="modal-input"
+                   placeholder="Playlist name"
+                   @bind="_newPlaylistName"
+                   @bind:event="oninput"/>
+
+            <div class="rules-section">
+                <span class="rules-label">Rules</span>
+                <SmartRuleGroupEditor Group="_smartRootGroup" Depth="0" CanRemoveSelf="false"/>
+            </div>
+
+            <div class="limit-section">
+                <label class="limit-checkbox-label">
+                    <input type="checkbox" @bind="_limitEnabled"/>
+                    Limit to top
+                </label>
+                <input class="rule-input rule-input-number"
+                       type="number" min="1"
+                       value="@_limitValue"
+                       disabled="@(!_limitEnabled)"
+                       @onchange="OnLimitValueChanged"/>
+                <span class="limit-label">most recently added tracks</span>
+            </div>
+
+            @if (_modalError is not null)
+            {
+                <p class="modal-error">@_modalError</p>
+            }
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" @onclick="CloseModals">Cancel</button>
+                <button class="modal-btn modal-btn-ok" @onclick="ConfirmCreateSmartPlaylist" disabled="@_isSaving">
+                    @(_isSaving ? "Creating..." : "OK")
+                </button>
+            </div>
+        </div>
+    </div>
+}

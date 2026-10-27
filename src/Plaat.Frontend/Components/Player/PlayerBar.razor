@@ -1,0 +1,93 @@
+@using Plaat.Frontend.Models
+@if (MusicPlayList.CurrentIndex >= 0)
+{
+    @if (_isFullscreen)
+    {
+        <div class="fullscreen-overlay">
+            <div class="fullscreen-content">
+                @if (MusicPlayList.CurrentValue is not null)
+                {
+                    <img src="@GetImg()" class="fullscreen-cover" alt="Album cover" />
+                }
+                <div class="fullscreen-track-info">
+                    <span class="fullscreen-title">@MusicPlayList.CurrentValue?.Title</span>
+                    <a @onclick="ToggleFullscreen" href="@GetAlbumHref()" class="fullscreen-album">@MusicPlayList.CurrentValue?.Album</a>
+                    <span class="fullscreen-artist">
+                        @foreach (var artist in MusicPlayList.CurrentValue?.Artists.Index() ?? [])
+                        {
+                            <a @onclick="ToggleFullscreen" href="@Redirects.GetArtistHref(artist.Item.Id)" class="fullscreen-artist-link">@artist.Item.Name</a>
+                            @if (artist.Index != (MusicPlayList.CurrentValue?.Artists.Count ?? 1) - 1)
+                            {
+                                <span>, </span>
+                            }
+                        }
+                    </span>
+                    <div class="fullscreen-stars">
+                        <StarRating Value="_rating" Busy="_savingRating" ValueChanged="SetRating" Label="@RatingLabel()"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="player-bar">
+        <div class="player-left">
+            @if (MusicPlayList.CurrentValue is not null)
+            {
+                <img src="@GetImg()" class="album-cover" alt="Album cover" />
+            }
+            <div class="track-info">
+                <span class="track-title">@MusicPlayList.CurrentValue?.Title</span>
+                <span class="track-artist">@MusicPlayList.CurrentValue?.AllArtists</span>
+            </div>
+            <div class="player-stars">
+                <StarRating Value="_rating" Busy="_savingRating" ValueChanged="SetRating" Label="@RatingLabel()"/>
+            </div>
+        </div>
+
+        <div class="player-center">
+            <div class="player-controls">
+                <button @onclick="Previous" title="Previous">
+                    <span class="icon icon-previous"></span>
+                </button>
+                <button @onclick="TogglePlay" title="@(MusicPlayList.IsPlaying ? "Pause" : "Play")">
+                    <span class="icon @(MusicPlayList.IsPlaying ? "icon-pause" : "icon-play")"></span>
+                </button>
+                <button @onclick="Next" title="Next">
+                    <span class="icon icon-next"></span>
+                </button>
+                <button @onclick="ToggleShuffle" title="Shuffle" class="@(MusicPlayList.IsShuffled ? "active" : "")">
+                    <span class="icon icon-shuffle"></span>
+                </button>
+                <button @onclick="ToggleRepeat" title="@GetRepeatTitle(MusicPlayList.RepeatMode)" class="@(MusicPlayList.RepeatMode != RepeatMode.Off ? "active" : "")">
+                    <span class="icon @(MusicPlayList.RepeatMode == RepeatMode.One ? "icon-repeat-one" : "icon-repeat")"></span>
+                </button>
+            </div>
+            <div class="player-seek">
+                <SeekBar Value="_currentTime"
+                         Min="EffectiveStart"
+                         Max="EffectiveEnd"
+                         ValueChanged="Seek"/>
+                <span class="time-display">@FormatTime(_currentTime) / @FormatTime(EffectiveEnd)</span>
+            </div>
+        </div>
+
+        <div class="player-right">
+            <div class="volume-control">
+                <span class="icon @GetVolumeIconClass()"></span>
+                <input type="range" min="0" max="1" step="0.01" value="@_volume" @oninput="SetVolume" class="volume-slider" title="Volume"/>
+            </div>
+            <QueuePanel IsOpen="_isQueueOpen" IsOpenChanged="OnQueueOpenChanged" />
+            <button @onclick="ToggleFullscreen" title="Toggle fullscreen" class="fullscreen-toggle @(_isFullscreen ? "active" : "")">
+                <span class="icon icon-chevron @(_isFullscreen ? "icon-chevron-down" : "icon-chevron-up")"></span>
+            </button>
+            <button @onclick="Close" title="Close player">
+                <span class="icon icon-close"></span>
+            </button>
+            <audio @ref="_audioRef"
+                   preload="auto"
+                   @onended="TrackEnded">
+            </audio>
+        </div>
+    </div>
+}

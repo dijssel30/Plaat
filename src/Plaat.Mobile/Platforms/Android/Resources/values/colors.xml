@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Aurora's actual orange/pink accents come entirely from Resources/Styles/Colors.xaml (the
+        MAUI resource dictionary every page's XAML uses) - nothing rendered relies on these native
+        Android theme attributes for its visible color. colorPrimary specifically also backs the
+        (invisible, since every page draws its own in-content header) native Shell AppBarLayout,
+        and Android tints the system status bar to match it - so keeping colorPrimary at the vivid
+        accent orange showed up as a jarring solid-orange status bar. Dark instead, so it blends in.
+    -->
+    <color name="colorPrimary">#08070b</color>
+    <color name="colorPrimaryDark">#08070b</color>
+    <color name="colorAccent">#ff3d7f</color>
+</resources>

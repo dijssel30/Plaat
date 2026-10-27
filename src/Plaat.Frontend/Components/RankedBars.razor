@@ -1,0 +1,12 @@
+<ol class="ranked" style="@($"--bar: {Accent}")">
+    @foreach (var item in Items)
+    {
+        <li class="ranked-row" title="@item.Name: @item.Count.ToString("N0") @Unit">
+            <span class="ranked-name">@item.Name</span>
+            <span class="ranked-count">@item.Count.ToString("N0")</span>
+            <span class="ranked-track">
+                <span class="ranked-fill" style="width: @Share(item.Count)%"></span>
+            </span>
+        </li>
+    }
+</ol>

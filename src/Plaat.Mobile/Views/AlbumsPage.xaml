@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:player="clr-namespace:Plaat.Mobile.Views.Player"
+             xmlns:models="clr-namespace:Plaat.Contract.Models;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.AlbumsPage"
+             x:DataType="vm:AlbumsViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding RecentlyAddedToggleLabel}" Command="{Binding ToggleRecentlyAddedCommand}" />
+        <ToolbarItem Text="{Binding FavoritesToggleLabel}" Command="{Binding ToggleFavoritesCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="0" RowDefinitions="Auto,*">
+            <SearchBar Grid.Row="0" Placeholder="Search albums" Text="{Binding Search}" />
+
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Albums}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AlbumOnlyDto">
+                        <Grid Padding="16,10" ColumnDefinitions="56,*" ColumnSpacing="12">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAlbumTapped" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Border Grid.Column="0" Style="{StaticResource Art}">
+                                <Image Source="{Binding Id, Converter={StaticResource AlbumCoverConverter}}"
+                                       WidthRequest="56" HeightRequest="56" Aspect="AspectFill" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="{Binding Title}" FontFamily="DMSansBold" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding AllArtists}" FontSize="13" TextColor="{StaticResource TextMuted}" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <player:MiniPlayerBar Grid.Row="1" />
+    </Grid>
+</ContentPage>

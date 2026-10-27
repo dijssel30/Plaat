@@ -1,0 +1,123 @@
+/* A y-axis gutter beside the plot, with the x-axis labels on their own row below
+   it. Bars flex to share whatever width is left, so the chart fits its panel at
+   any window size instead of being scaled to a fixed drawing. */
+.chart {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 210px auto;
+    column-gap: 12px;
+    row-gap: 8px;
+}
+
+.chart-axis {
+    grid-row: 1;
+    grid-column: 1;
+    position: relative;
+    min-width: 2.2rem;
+}
+
+.chart-axis span {
+    position: absolute;
+    right: 0;
+    transform: translateY(50%);
+    font-size: 0.66rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.chart-plot {
+    grid-row: 1;
+    grid-column: 2;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    border-bottom: 1px solid var(--line);
+}
+
+.chart-grid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+}
+
+.chart-slot {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.chart-bar {
+    width: 100%;
+    max-width: 44px;
+    min-height: 2px;
+    border-radius: 4px 4px 0 0;
+    background: var(--bar);
+    transition: background 120ms ease;
+}
+
+.chart-bar.empty {
+    min-height: 0;
+}
+
+.chart-slot:hover .chart-bar {
+    background: var(--bar-hover);
+}
+
+.chart-labels {
+    grid-row: 2;
+    grid-column: 2;
+    display: flex;
+    gap: 3px;
+}
+
+/* Only every n-th slot carries a label (see BarChart.ShowLabel); the rest are
+   empty spacers that keep each label centred over its own bar. A label wider than
+   its slot is free to bleed over those spacers - the ends are pinned inwards so
+   the row never pushes past the panel. */
+.chart-labels span {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    font-size: 0.64rem;
+    line-height: 1.2;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.chart-labels span:first-child {
+    text-align: left;
+}
+
+.chart-labels span:last-child {
+    text-align: right;
+}
+
+@media (max-width: 640.98px) {
+    .chart {
+        grid-template-rows: 165px auto;
+        column-gap: 8px;
+    }
+
+    .chart-plot,
+    .chart-labels {
+        gap: 2px;
+    }
+
+    .chart-labels span {
+        font-size: 0.6rem;
+    }
+
+    .chart-labels span.secondary {
+        visibility: hidden;
+    }
+}

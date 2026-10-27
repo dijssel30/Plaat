@@ -1,0 +1,47 @@
+@page "/settings"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@using MudBlazor
+
+<PageTitle>Settings - Plaat</PageTitle>
+
+<h1>Settings</h1>
+
+<div class="settings-card">
+    <h2>Playback</h2>
+
+    <MudSwitch T="bool"
+               Value="_loudnessNormalizationEnabled"
+               ValueChanged="OnLoudnessNormalizationChanged"
+               Disabled="_isSavingLoudnessNormalization"
+               Color="Color.Primary"
+               Label="Loudness normalization"/>
+    <p class="text-muted">
+        Automatically turns down loud tracks so your whole library plays at a more even volume.
+        Quiet tracks are never boosted.
+    </p>
+</div>
+
+<div class="settings-card">
+    <h2>Change Password</h2>
+
+    @if (_passwordMessage is not null)
+    {
+        <div class="@(_passwordError ? "alert alert-danger" : "alert alert-success")">@_passwordMessage</div>
+    }
+
+    <div class="form-group">
+        <label>Current password</label>
+        <input class="form-control" type="password" @bind="_currentPassword" autocomplete="current-password"/>
+    </div>
+    <div class="form-group">
+        <label>New password</label>
+        <input class="form-control" type="password" @bind="_newPassword" autocomplete="new-password"/>
+    </div>
+    <div class="form-group">
+        <label>Confirm new password</label>
+        <input class="form-control" type="password" @bind="_confirmPassword" autocomplete="new-password"/>
+    </div>
+    <button class="btn btn-primary" @onclick="ChangePassword" disabled="@_isChangingPassword">
+        @(_isChangingPassword ? "Saving..." : "Change Password")
+    </button>
+</div>

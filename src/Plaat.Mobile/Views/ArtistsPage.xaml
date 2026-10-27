@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:player="clr-namespace:Plaat.Mobile.Views.Player"
+             xmlns:models="clr-namespace:Plaat.Contract.Models;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.ArtistsPage"
+             x:DataType="vm:ArtistsViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding FavoritesToggleLabel}" Command="{Binding ToggleFavoritesCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="0" RowDefinitions="Auto,*">
+            <SearchBar Grid.Row="0" Placeholder="Search artists" Text="{Binding Search}" />
+
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Artists}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ArtistOnlyDto">
+                        <Grid Padding="16,12">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnArtistTapped" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Label Text="{Binding Name}" FontFamily="DMSansBold" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <player:MiniPlayerBar Grid.Row="1" />
+    </Grid>
+</ContentPage>

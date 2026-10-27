@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>false</IsPackable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Needed for IPasswordHasher/PasswordHasher (seeding extra users) and for hosting
+             Plaat.Frontend in-process via WebApplicationFactory with a real Kestrel server. -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--
+            Deliberately no ProjectReference to Plaat.Api or Plaat.Frontend: both are run as real,
+            isolated child processes from a `dotnet publish` output instead of hosted in-process
+            (see PlaatApiTestServer's and PlaatFrontendTestServer's doc comments for why), so this
+            project never needs either's Program type at compile time.
+        -->
+        <ProjectReference Include="..\..\src\Plaat.Db\Plaat.Db.csproj" />
+        <ProjectReference Include="..\..\src\Plaat.Contract\Plaat.Contract.csproj" />
+    </ItemGroup>
+
+</Project>

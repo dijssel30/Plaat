@@ -1,0 +1,103 @@
+﻿@page "/playlists/{PlaylistName}"
+@using MudBlazor
+@using Plaat.Frontend.Components.Playlists
+
+<PageTitle>@_playlist?.PlaylistName</PageTitle>
+
+@if (!_loading && _playlist is null)
+{
+    <h3>Playlist not found</h3>
+    <p>This playlist may have been removed, or the link is incorrect.</p>
+}
+else if (_playlist is not null)
+{
+    <div class="playlist-header">
+        <h2 class="playlist-title">@_playlist?.PlaylistName</h2>
+        <div class="playlist-action-buttons">
+            <button class="action-btn" @onclick="PlayAll"><span class="icon icon-play"></span> Play</button>
+            <button class="action-btn @(MusicPlayList.IsShuffled ? "active" : "")" @onclick="ShuffleAll"><span class="icon icon-shuffle"></span> Shuffle</button>
+            @if (_playlist is { IsSmart: false })
+            {
+                <button class="action-btn @(_editMode ? "active" : "")" @onclick="ToggleEditMode">Edit</button>
+            }
+            @if (_playlist is { IsSmart: true })
+            {
+                <button class="action-btn" @onclick="OpenEditSmartPlaylistModal">Edit Rules</button>
+            }
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert"
+                     Label="More Actions"
+                     Dense="true">
+                <MudMenuItem Label="Duplicate playlist" OnClick="OpenDuplicatePlaylistModal"/>
+            </MudMenu>
+        </div>
+    </div>
+
+    <h3>Tracks (@_musicFileList.Count)</h3>
+
+    <MusicFileList Music="@_musicFileList"
+                   ShowEditControls="@_editMode"
+                   OnRemoveTrack="OnRemoveTrack"
+                   OnMoveTrack="OnMoveTrack"/>
+}
+
+@if (_showDuplicatePlaylistModal)
+{
+    <div class="modal-overlay" @onclick="CloseDuplicatePlaylistModal">
+        <div class="modal" @onclick:stopPropagation="true">
+            <h2 class="modal-title">Duplicate playlist</h2>
+            <input class="modal-input"
+                   placeholder="Playlist name"
+                   @bind="_duplicateName"
+                   @bind:event="oninput"
+                   @onkeydown="OnDuplicateNameKeyDown"/>
+            @if (_duplicateModalError is not null)
+            {
+                <p class="modal-error">@_duplicateModalError</p>
+            }
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" @onclick="CloseDuplicatePlaylistModal">Cancel</button>
+                <button class="modal-btn modal-btn-ok" @onclick="ConfirmDuplicatePlaylist" disabled="@_duplicateIsSaving">
+                    @(_duplicateIsSaving ? "Duplicating..." : "OK")
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_showEditSmartPlaylistModal)
+{
+    <div class="modal-overlay" @onclick="CloseEditSmartPlaylistModal">
+        <div class="modal modal-smart" @onclick:stopPropagation="true">
+            <h2 class="modal-title">Edit Smart Playlist Rules</h2>
+
+            <div class="rules-section">
+                <span class="rules-label">Rules</span>
+                <SmartRuleGroupEditor Group="_editSmartRootGroup" Depth="0" CanRemoveSelf="false"/>
+            </div>
+
+            <div class="limit-section">
+                <label class="limit-checkbox-label">
+                    <input type="checkbox" @bind="_editLimitEnabled"/>
+                    Limit to top
+                </label>
+                <input class="rule-input rule-input-number"
+                       type="number" min="1"
+                       value="@_editLimitValue"
+                       disabled="@(!_editLimitEnabled)"
+                       @onchange="OnEditLimitValueChanged"/>
+                <span class="limit-label">most recently added tracks</span>
+            </div>
+
+            @if (_editModalError is not null)
+            {
+                <p class="modal-error">@_editModalError</p>
+            }
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" @onclick="CloseEditSmartPlaylistModal">Cancel</button>
+                <button class="modal-btn modal-btn-ok" @onclick="ConfirmEditSmartPlaylist" disabled="@_editIsSaving">
+                    @(_editIsSaving ? "Saving..." : "Save")
+                </button>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @* base must come before any tag with a URL attribute (link/script/img/...), otherwise the
+       browser resolves those relative URLs against the current page path instead of the site
+       root - e.g. a link fetched while on /artists/{id} 404s at /artists/_content/... *@
+    <base href="/"/>
+
+    <!-- MudBlazor -->
+    <!-- Put first so higher priority is given to own stylesheets -->
+    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="color-scheme" content="dark"/>
+
+    @* Theme faces. Both stacks fall back to system-ui, so the UI stays intact offline. *@
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap"/>
+    <ResourcePreloader/>
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]"/>
+    <link rel="stylesheet" href="@Assets["app.css"]"/>
+    <link rel="stylesheet" href="@Assets["Plaat.Frontend.styles.css"]"/>
+    <link href="css/stylesheet.css" rel="stylesheet" />
+    <ImportMap/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <HeadOutlet/>
+</head>
+
+<body>
+<Routes/>
+<ReconnectModal/>
+<script src="@Assets["_framework/blazor.web.js"]"></script>
+<script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+@* Player scripts live here rather than in MainLayout so they load exactly once per page load,
+   however the page was entered. MainLayout is only ever rendered interactively (Routes gates the
+   Router on the first render), so hosting them there re-ran uiHelpers.js - and its global viewport
+   listeners - every time the layout remounted, e.g. on a logout/login round trip. *@
+<script>
+    // Always available immediately (inline, no external fetch), so PlayerBar can poll it to know
+    // when audioPlayer.js has actually finished loading, instead of assuming it has.
+    window.audioPlayerReady = function () { return typeof window.audioPlayer !== 'undefined'; };
+</script>
+<script src="audioPlayer.js"></script>
+<script src="uiHelpers.js"></script>
+<script src="sessionSync.js"></script>
+</body>
+
+</html>

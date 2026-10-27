@@ -1,0 +1,69 @@
+<div class="admin-section">
+    @if (_message is not null)
+    {
+        <div class="alert alert-danger">@_message</div>
+    }
+
+    <div class="log-filters">
+        <button class="btn btn-primary" @onclick="Refresh" disabled="@_isLoading">
+            @(_isLoading ? "Refreshing..." : "Refresh")
+        </button>
+
+        <div class="level-filters" role="group" aria-label="Filter by log level">
+            @foreach (var level in AvailableLevels)
+            {
+                <button type="button"
+                        class="btn btn-sm @(_selectedLevels.Contains(level) ? "btn-secondary" : "btn-outline-secondary")"
+                        aria-pressed="@(_selectedLevels.Contains(level) ? "true" : "false")"
+                        @onclick="() => ToggleLevel(level)">
+                    @level
+                </button>
+            }
+        </div>
+
+        <input class="search-input log-search"
+               placeholder="Filter messages..."
+               aria-label="Filter log messages"
+               @bind="Search"
+               @bind:event="oninput"/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Time</th>
+                <th>Level</th>
+                <th>Category</th>
+                <th>Message</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var entry in _entries)
+            {
+                <tr>
+                    <td class="text-nowrap">@entry.Timestamp.ToLocalTime().ToString("g")</td>
+                    <td>
+                        <span class="@(entry.Level == "Error" || entry.Level == "Critical" ? "badge bg-danger" : "badge bg-warning text-dark")">
+                            @entry.Level
+                        </span>
+                    </td>
+                    <td>@entry.Category</td>
+                    <td>
+                        @entry.Message
+                        @if (entry.Exception is not null)
+                        {
+                            <pre class="log-exception">@entry.Exception</pre>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    @if (_entries.Count == 0 && !_isLoading)
+    {
+        <p>@(HasFilters ? "No log entries match the current filters." : "No warnings or errors logged.")</p>
+    }
+</div>

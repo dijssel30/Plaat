@@ -1,0 +1,46 @@
+@page "/admin"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+@using Plaat.Frontend.Components.Pages.AdminPanels
+
+<PageTitle>Admin - Plaat</PageTitle>
+
+<h1>Admin</h1>
+
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+        <button class="nav-link @(_activeTab == AdminTab.Tasks ? "active" : "")" @onclick="() => SetTab(AdminTab.Tasks)">Tasks</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(_activeTab == AdminTab.Logs ? "active" : "")" @onclick="() => SetTab(AdminTab.Logs)">Logs</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(_activeTab == AdminTab.CorruptTracks ? "active" : "")" @onclick="() => SetTab(AdminTab.CorruptTracks)">Corrupt Tracks</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(_activeTab == AdminTab.ManageUsers ? "active" : "")" @onclick="() => SetTab(AdminTab.ManageUsers)">Manage Users</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(_activeTab == AdminTab.MonitoredFolders ? "active" : "")" @onclick="() => SetTab(AdminTab.MonitoredFolders)">Monitored Folders</button>
+    </li>
+</ul>
+
+@if (_activeTab == AdminTab.Tasks)
+{
+    <TasksPanel/>
+}
+else if (_activeTab == AdminTab.Logs)
+{
+    <LogsPanel/>
+}
+else if (_activeTab == AdminTab.CorruptTracks)
+{
+    <CorruptTracksPanel/>
+}
+else if (_activeTab == AdminTab.ManageUsers)
+{
+    <ManageUsersPanel/>
+}
+else if (_activeTab == AdminTab.MonitoredFolders)
+{
+    <MonitoredFoldersPanel/>
+}

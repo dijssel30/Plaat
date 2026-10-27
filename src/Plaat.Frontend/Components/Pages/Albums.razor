@@ -1,0 +1,86 @@
+@page "/albums"
+@page "/artists/{ArtistId:int}/albums"
+@page "/albums/favorites"
+@page "/albums/recently-added"
+
+<PageTitle>@_headingLabel</PageTitle>
+
+<h3>@_headingLabel (@FilteredAlbumList.Count)</h3>
+
+<div>
+    <div class="toolbar">
+        <div class="search-bar">
+            <input class="search-input"
+                   placeholder="Search albums..."
+                   @bind="_search"
+                   @bind:event="oninput"/>
+        </div>
+
+        <div class="view-controls">
+            @if (ArtistId is null)
+            {
+                <button type="button"
+                        class="favorites-toggle-button @(_favoritesOnly ? "active" : "")"
+                        @onclick="ToggleFavoritesOnly">
+                    <span class="icon icon-heart"></span> @(_favoritesOnly ? "All Albums" : "Favorites")
+                </button>
+
+                <button type="button"
+                        class="recently-added-toggle-button @(_recentlyAddedOnly ? "active" : "")"
+                        @onclick="ToggleRecentlyAddedOnly">
+                    <span class="icon icon-clock"></span> @(_recentlyAddedOnly ? "All Albums" : "Recently Added")
+                </button>
+            }
+
+            @if (_viewMode == AlbumsViewMode.Grid)
+            {
+                <input class="cover-size-slider"
+                       type="range"
+                       min="@MinCoverSize"
+                       max="@MaxCoverSize"
+                       value="@_coverSize"
+                       @oninput="OnCoverSizeChanged"/>
+            }
+
+            <div class="view-toggle">
+                <button type="button"
+                        class="view-toggle-button @(_viewMode == AlbumsViewMode.List ? "active" : "")"
+                        @onclick="() => SetViewMode(AlbumsViewMode.List)">
+                    List
+                </button>
+                <button type="button"
+                        class="view-toggle-button @(_viewMode == AlbumsViewMode.Grid ? "active" : "")"
+                        @onclick="() => SetViewMode(AlbumsViewMode.Grid)">
+                    Grid
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (_viewMode == AlbumsViewMode.List)
+    {
+        <div class="album-list-container">
+            <Virtualize Items="FilteredAlbumList">
+                <div class="album-row">
+                    <NavLink class="album-link" href="@(GetHref(context.Id))">
+                        <span class="album-link-text">@context.AllArtists - @context.Title</span>
+                    </NavLink>
+                </div>
+            </Virtualize>
+        </div>
+    }
+    else
+    {
+        <div class="album-grid-list" style="--cover-size: @(_coverSize)px">
+            <Virtualize Items="AlbumBatches" Context="batch" ItemSize="@EstimatedBatchHeight">
+                @foreach (var album in batch)
+                {
+                    <a @key="album.Id" class="album-grid-card" href="@(GetHref(album.Id))">
+                        <img src="@GetCoverImg(album.Id)" alt="cover" loading="lazy"/>
+                        <span>@album.AllArtists - @album.Title</span>
+                    </a>
+                }
+            </Virtualize>
+        </div>
+    }
+</div>

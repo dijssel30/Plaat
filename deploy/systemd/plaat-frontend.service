@@ -1,0 +1,19 @@
+[Unit]
+Description=Plaat Frontend
+After=network-online.target plaat-api.service
+Wants=network-online.target
+Requires=plaat-api.service
+
+[Service]
+Type=simple
+User=<insert username>
+Group=<insert username>
+WorkingDirectory=~/plaat/frontend
+ExecStart=~/plaat/frontend/Plaat.Frontend
+Restart=on-failure
+RestartSec=5
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5179
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.NowPlayingPage"
+             x:DataType="vm:NowPlayingViewModel"
+             Shell.PresentationMode="ModalAnimated"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource Bg}"
+             Title="Now Playing">
+
+    <Grid x:Name="RootGrid" RowDefinitions="Auto,*" Padding="16,50,16,24" RowSpacing="20">
+
+        <Grid.GestureRecognizers>
+            <!-- Swipe-to-dismiss for the fullscreen player, mirroring the chevron button above.
+                 GestureRecognizers lives on View, not Page, so this has to be on the root Grid.
+                 The code-behind mirrors it onto the content inside as well - see
+                 AddSwipeToDismissToContent for why the root alone isn't enough. -->
+            <SwipeGestureRecognizer Direction="Down" Swiped="OnSwipedDown" />
+        </Grid.GestureRecognizers>
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+            <ImageButton Grid.Column="0" Source="chevron_down.svg" WidthRequest="28" HeightRequest="28"
+                         BackgroundColor="Transparent" Clicked="OnCloseClicked" />
+            <Label Grid.Column="1" Text="Now Playing" TextColor="{StaticResource TextPrimary}"
+                   FontFamily="SoraBold" FontSize="16"
+                   HorizontalTextAlignment="Center" VerticalOptions="Center" />
+            <ImageButton Grid.Column="2" Source="queue.svg" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Clicked="OnQueueClicked" />
+        </Grid>
+
+    <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
+
+        <Border Style="{StaticResource ArtLarge}" HorizontalOptions="Center">
+            <Image Source="{Binding CoverArtUrl}" HeightRequest="290" WidthRequest="290"
+                   Aspect="AspectFill">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCoverArtTapped" />
+                </Image.GestureRecognizers>
+            </Image>
+        </Border>
+
+        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+            <Label Text="{Binding TrackTitle}" TextColor="{StaticResource TextPrimary}" FontSize="21"
+                   FontFamily="SoraBold"
+                   HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" />
+            <!-- One label per artist rather than a single "A, B" label, so each name opens its own
+                 artist page instead of every tap landing on the first one. -->
+            <FlexLayout BindableLayout.ItemsSource="{Binding Artists}" Wrap="Wrap"
+                        JustifyContent="Center" AlignItems="Center" HorizontalOptions="Center">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:NowPlayingArtist">
+                        <Label Text="{Binding Text}" TextColor="{StaticResource TextMuted}" FontSize="15"
+                               Padding="2,0" LineBreakMode="TailTruncation">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnArtistTapped" CommandParameter="{Binding .}" />
+                                <!-- Templated, so AddSwipeToDismissToContent (which walks the tree
+                                     once at construction) never sees these labels. -->
+                                <SwipeGestureRecognizer Direction="Down" Swiped="OnSwipedDown" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+            <Label Text="{Binding AlbumName}" TextColor="{StaticResource TextFaint}" FontSize="13"
+                   HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" />
+            <!-- The current track's star rating: tap a star, or swipe across the row, to set it.
+                 The row must stay exactly as wide as the stars in it - the swipe maps the finger's
+                 position across this layout onto the 0-5 range, so any padding here would shift
+                 every star. Give the stars themselves room instead. -->
+            <HorizontalStackLayout x:Name="StarsRow" BindableLayout.ItemsSource="{Binding Stars}" Spacing="4"
+                                   HorizontalOptions="Center" Margin="0,6,0,0">
+                <HorizontalStackLayout.GestureRecognizers>
+                    <PointerGestureRecognizer PointerPressed="OnStarsPointerPressed"
+                                              PointerMoved="OnStarsPointerMoved"
+                                              PointerReleased="OnStarsPointerReleased" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:NowPlayingStar">
+                        <Image Source="{Binding Source}" WidthRequest="26" HeightRequest="26" />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Spacing="2">
+            <Slider Minimum="{Binding TrimStartSeconds}" Maximum="{Binding DurationSeconds}" Value="{Binding PositionSeconds}"
+                    DragStarted="OnSeekStarted" DragCompleted="OnSeekCompleted" ValueChanged="OnSeekValueChanged" />
+            <Grid ColumnDefinitions="*,*">
+                <Label Grid.Column="0" Text="{Binding PositionSeconds, Converter={StaticResource SecondsToTimeConverter}}"
+                       TextColor="{StaticResource TextFaint}" FontSize="12" />
+                <Label Grid.Column="1" Text="{Binding DurationSeconds, Converter={StaticResource SecondsToTimeConverter}}"
+                       TextColor="{StaticResource TextFaint}" FontSize="12" HorizontalTextAlignment="End" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <Grid ColumnDefinitions="Auto,*,Auto,*,Auto" HorizontalOptions="Center" ColumnSpacing="20">
+            <ImageButton Grid.Column="0" Source="shuffle.svg" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Opacity="{Binding IsShuffled, Converter={StaticResource ShuffleOpacityConverter}}"
+                         Command="{Binding ToggleShuffleCommand}" />
+            <ImageButton Grid.Column="1" Source="previous.svg" WidthRequest="34" HeightRequest="34"
+                         BackgroundColor="Transparent" Command="{Binding PreviousCommand}" />
+            <Border Grid.Column="2" StrokeThickness="0" Background="{StaticResource AccentGradient}"
+                    WidthRequest="66" HeightRequest="66">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="33" />
+                </Border.StrokeShape>
+                <ImageButton Source="{Binding IsPlaying, Converter={StaticResource PlayPauseIconConverter}}"
+                             WidthRequest="28" HeightRequest="28" BackgroundColor="Transparent"
+                             Command="{Binding TogglePlayPauseCommand}" />
+            </Border>
+            <ImageButton Grid.Column="3" Source="next.svg" WidthRequest="34" HeightRequest="34"
+                         BackgroundColor="Transparent" Command="{Binding NextCommand}" />
+            <ImageButton Grid.Column="4" Source="{Binding RepeatMode, Converter={StaticResource RepeatIconConverter}}"
+                         WidthRequest="26" HeightRequest="26" BackgroundColor="Transparent"
+                         Opacity="{Binding RepeatMode, Converter={StaticResource RepeatOpacityConverter}}"
+                         Command="{Binding ToggleRepeatCommand}" />
+        </Grid>
+
+    </VerticalStackLayout>
+    </Grid>
+</ContentPage>

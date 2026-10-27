@@ -1,0 +1,40 @@
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+@if (_recentlyPlayed.Count > 0)
+{
+    <section class="home-section">
+        <h3>Jump back in</h3>
+        <MusicFileList Music="@_recentlyPlayed" ShowSearchBar="false"/>
+    </section>
+}
+
+@if (_recentlyAdded.Albums.Count > 0)
+{
+    <section class="home-section">
+        <h3>Recently added albums</h3>
+        <div class="albums-scroll">
+            @foreach (var album in _recentlyAdded.Albums)
+            {
+                <a class="album-card" href="@Redirects.GetAlbumHref(album.Id)">
+                    <img src="@GetImg(album.Id)" alt="cover" loading="lazy"/>
+                    <span>@album.Title</span>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+@if (_recentlyAdded.Tracks.Count > 0)
+{
+    <section class="home-section">
+        <h3>Recently added tracks</h3>
+        <MusicFileList Music="@_recentlyAdded.Tracks" ShowSearchBar="false"/>
+    </section>
+}
+
+@if (_loaded && _recentlyPlayed.Count == 0 && _recentlyAdded.Albums.Count == 0 && _recentlyAdded.Tracks.Count == 0)
+{
+    <p>Nothing played or added yet. <a href="tracks">Browse all tracks</a>.</p>
+}

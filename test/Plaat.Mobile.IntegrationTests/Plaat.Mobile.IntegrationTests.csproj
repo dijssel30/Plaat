@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <!--
+        These integration tests exercise the real network/auth seams Plaat.Mobile relies on - real
+        HTTP against a real (isolated, temp-DB) Plaat.Api process via Plaat.TestSupport, real JWT
+        issuance/refresh through PlaatClient, and the loopback streaming proxy actually forwarding
+        bytes - without needing an Android emulator or any Microsoft.Maui.* dependency. Like
+        Plaat.Mobile.Tests, the handful of Mobile source files under test that have no actual MAUI
+        dependency (just plain .NET + Plaat.Contract) are linked in directly rather than duplicated,
+        so this stays a normal, fast, device-free `dotnet test` run.
+    -->
+    <ItemGroup>
+        <Compile Include="..\..\src\Plaat.Mobile\Services\Streaming\LoopbackProxyService.cs" Link="Linked\LoopbackProxyService.cs" />
+        <Compile Include="..\..\src\Plaat.Mobile\Services\Auth\AccessTokenGate.cs" Link="Linked\AccessTokenGate.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="10.1.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Shouldly" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Plaat.TestSupport\Plaat.TestSupport.csproj" />
+        <ProjectReference Include="..\..\src\Plaat.Contract\Plaat.Contract.csproj" />
+    </ItemGroup>
+
+</Project>

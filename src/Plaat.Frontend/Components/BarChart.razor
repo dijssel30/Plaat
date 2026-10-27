@@ -1,0 +1,28 @@
+<div class="chart" style="@($"--bar: {Accent}; --bar-hover: {HoverAccent}")">
+    <div class="chart-axis">
+        @foreach (var tick in _ticks)
+        {
+            <span style="bottom: @Height(tick)%">@tick.ToString("N0")</span>
+        }
+    </div>
+    <div class="chart-plot">
+        @foreach (var tick in _ticks)
+        {
+            <span class="chart-grid" style="bottom: @Height(tick)%"></span>
+        }
+        @for (var i = 0; i < Counts.Count; i++)
+        {
+            var count = Counts[i];
+
+            <div class="chart-slot" title="@Labels[i]: @count.ToString("N0") @Unit">
+                <span class="chart-bar @(count == 0 ? "empty" : null)" style="height: @Height(count)%"></span>
+            </div>
+        }
+    </div>
+    <div class="chart-labels">
+        @for (var i = 0; i < Labels.Count; i++)
+        {
+            <span class="@(IsSecondaryLabel(i) ? "secondary" : null)">@(ShowLabel(i) ? Labels[i] : null)</span>
+        }
+    </div>
+</div>

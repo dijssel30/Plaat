@@ -1,0 +1,45 @@
+.seekbar {
+    width: 340px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    touch-action: none;
+}
+
+.seekbar-track {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    border-radius: 3px;
+    background: var(--line-strong);
+}
+
+.seekbar-progress {
+    position: absolute;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--grad);
+}
+
+.seekbar-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 11px;
+    height: 11px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 640.98px) {
+    .seekbar {
+        width: 100%;
+        height: 30px;
+    }
+
+    .seekbar-thumb {
+        width: 16px;
+        height: 16px;
+    }
+}

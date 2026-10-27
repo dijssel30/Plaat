@@ -1,0 +1,9 @@
+.admin-section {
+    max-width: 1100px;
+    margin-bottom: 2rem;
+}
+
+.mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    word-break: break-all;
+}

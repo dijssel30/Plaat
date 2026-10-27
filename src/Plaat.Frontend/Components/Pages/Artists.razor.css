@@ -1,0 +1,66 @@
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.favorites-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    padding: 0 16px;
+    height: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.favorites-toggle-button:hover {
+    background: var(--panel-2);
+}
+
+.favorites-toggle-button.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.artist-list-container {
+    flex: 1;
+    padding: 8px 0 40px 0;
+    height: 100%;
+    width: 100%;
+}
+
+.artist-row {
+    padding: 0 16px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    transition: background 140ms ease;
+}
+
+.artist-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.artist-link {
+    display: block;
+    text-decoration: none;
+    min-width: 0;
+}
+
+.artist-link-text {
+    color: var(--text) !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none !important;
+}

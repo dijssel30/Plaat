@@ -1,0 +1,21 @@
+bin/
+obj/
+
+# Machine-local secrets, never committed - see Plaat.Api/Program.cs
+appsettings.Secrets.json
+appsettings.*.Secrets.json
+
+# Deploy config (hosts, paths, credentials) - see deploy/deploy.env.example
+deploy/deploy.env
+
+# Mobile deploy config (local toolchain paths) - see Plaat.Mobile/deploy-to-phone.env.example
+Plaat.Mobile/deploy-to-phone.env
+
+DataProtectionKeys
+
+Plaat.db
+Plaat-v0.db*
+
+Plaat.sln.DotSettings.user
+
+.idea

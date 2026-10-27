@@ -1,0 +1,81 @@
+﻿@page "/Artists/{ArtistId:int}"
+
+<PageTitle>@_artist?.Name</PageTitle>
+
+@if (!_loading && _artist is null)
+{
+    <h3>Artist not found</h3>
+    <p>This artist may have been removed, or the link is incorrect.</p>
+}
+else if (_artist is not null)
+{
+    <div class="artist-header">
+        @if (_artist.HasDiscogsImage)
+        {
+            <img class="artist-header-image" src="@GetArtistImg(_artist.Id)" alt="@_artist.Name"/>
+        }
+        else if (IsEnrichmentPending)
+        {
+            <div class="artist-header-image artist-header-image-pending"></div>
+        }
+        <div class="artist-header-summary">
+            <h2>@_artist.Name</h2>
+            <div class="artist-action-buttons">
+                <button class="action-btn @(_isFavorite ? "active" : "")" @onclick="ToggleFavorite">
+                    <span class="icon icon-heart"></span> @(_isFavorite ? "Favorited" : "Favorite")
+                </button>
+            </div>
+            @if (_artist.DiscogsSummary is not null)
+            {
+                <div class="artist-summary @(_summaryExpanded ? "" : "artist-summary-collapsed")">
+                    @Models.SafeMarkup.Discogs(_artist.DiscogsSummary)
+                </div>
+                @if (ShowSummaryToggle)
+                {
+                    <button class="artist-summary-toggle" @onclick="ToggleSummary">
+                        @(_summaryExpanded ? "Show less" : "Show more")
+                    </button>
+                }
+            }
+        </div>
+    </div>
+
+    @if (PopularTracks.Count > 0)
+    {
+        <div class="albums-header">
+            <h3>Popular Tracks</h3>
+        </div>
+
+        @* QueueMusic: playing one of the visible rows should queue every popular track, including
+           the ones still hidden behind "Show more". *@
+        <MusicFileList Music="@DisplayedPopularTracks" QueueMusic="@PopularTracks" ShowSearchBar="false" AskConfirmation="false"/>
+
+        @if (PopularTracks.Count > PopularTracksCollapsedCount)
+        {
+            <button class="artist-summary-toggle" @onclick="TogglePopularTracks">
+                @(_popularTracksExpanded ? "Show less" : "Show more")
+            </button>
+        }
+    }
+
+    @if (AlbumList.Count > 0)
+    {
+        <div class="albums-header">
+            <h3><a class="a-link" href="@Redirects.GetArtistAlbumsHref(_artist!.Id)">Albums</a></h3>
+        </div>
+
+        <div class="albums-scroll">
+            @foreach (var album in AlbumList)
+            {
+                <a class="album-card" href="@Redirects.GetAlbumHref(album.Id)">
+                    <img src="@GetImg(album.Id)" alt="cover"/>
+                    <span>@album.Title</span>
+                </a>
+            }
+        </div>
+    }
+
+    <h3>Tracks (@MusicFileList.Count)</h3>
+
+    <MusicFileList Music="@MusicFileList"/>
+}

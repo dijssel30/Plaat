@@ -1,0 +1,141 @@
+@using MudBlazor
+
+@if (ShowSearchBar)
+{
+    <div class="search-bar">
+        <input class="search-input"
+               placeholder="Search..."
+               @bind="_search"
+               @bind:event="oninput"/>
+    </div>
+}
+
+<div class="track-table @(ShowControls ? "queue-controls" : "")">
+    <div class="track-table-header">
+        @if (ShowControls)
+        {
+            <div class="drag-handle-col"></div>
+        }
+        <div class="sortable title @(ShowControls ? "disabled" : "")" @onclick="() => SetSort(SortColumn.Title)">Title <span class="sort-indicator">@SortIndicator(SortColumn.Title)</span></div>
+        <div class="sortable artists @(ShowControls ? "disabled" : "")" @onclick="() => SetSort(SortColumn.Artist)">Artist(s) <span class="sort-indicator">@SortIndicator(SortColumn.Artist)</span></div>
+        <div class="sortable album @(ShowControls ? "disabled" : "")" @onclick="() => SetSort(SortColumn.Album)">Album <span class="sort-indicator">@SortIndicator(SortColumn.Album)</span></div>
+        <div class="sortable year @(ShowControls ? "disabled" : "")" @onclick="() => SetSort(SortColumn.Year)">Year <span class="sort-indicator">@SortIndicator(SortColumn.Year)</span></div>
+        <div class="right sortable @(ShowControls ? "disabled" : "")" @onclick="() => SetSort(SortColumn.Plays)">Plays <span class="sort-indicator">@SortIndicator(SortColumn.Plays)</span></div>
+        @if (ShowControls)
+        {
+            <div class="remove-col"></div>
+        }
+    </div>
+    <div class="track-table-body">
+        <Virtualize Items="FilteredMusic">
+
+            <div @key="context.Item.Id"
+                 class="track-table-row @(context.Item.Id == CurrentPlayingId ? "active" : "") @RowClass(context.Index)"
+                 draggable="true"
+                 @ondragstart="() => OnDragStart(context.Index, context.Item)"
+                 @ondragover="() => OnDragOver(context.Index)"
+                 @ondragover:preventDefault
+                 @ondrop="() => OnDrop(context.Index)"
+                 @ondrop:preventDefault
+                 @ondragend="OnDragEnd"
+                 @onclick="() => SelectTrack(context.Index)">
+                @if (ShowControls)
+                {
+                    <div class="cell drag-handle" title="Drag to reorder">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <circle cx="8" cy="6" r="1.6" fill="currentColor" />
+                            <circle cx="16" cy="6" r="1.6" fill="currentColor" />
+                            <circle cx="8" cy="12" r="1.6" fill="currentColor" />
+                            <circle cx="16" cy="12" r="1.6" fill="currentColor" />
+                            <circle cx="8" cy="18" r="1.6" fill="currentColor" />
+                            <circle cx="16" cy="18" r="1.6" fill="currentColor" />
+                        </svg>
+                    </div>
+                }
+                <div class="cell title">
+                    @if (context.Item.Id == CurrentPlayingId)
+                    {
+                        <span class="icon @(MusicPlayList.IsPlaying ? "icon-play" : "icon-pause") now-playing-icon" title="@(MusicPlayList.IsPlaying ? "Now playing" : "Paused")"></span>
+                    }
+                    <span class="track-title">@context.Item.Title</span>
+
+                    <span class="track-menu">
+                        <MudMenu Icon="@Icons.Material.Filled.MoreVert"
+                                 Label="More Actions"
+                                 Dense="true">
+                            <MudMenu Label="Add to playlist" MaxHeight="300" FullWidth="true">
+                                @foreach (var playlist in _allPlaylists.Where(pl => !pl.IsSmart))
+                                {
+                                    <MudMenuItem Label="@playlist.PlaylistName" OnClick="() => AddToPlaylist(playlist.Id, context.Item.Id)" />
+                                }
+                            </MudMenu>
+                            <MudMenuItem Label="Add to queue" OnClick="() => AddToQueue(context.Item)" />
+                            <MudMenuItem Label="Play next" OnClick="() => PlayNext(context.Item)" />
+                            <MudMenuItem Label="Track info" OnClick="() => ShowTrackInfo(context.Item.Id)" />
+                            <MudMenuItem Label="Force reload metadata" OnClick="() => ReloadMetadata(context.Item.Id)" />
+                        </MudMenu>
+                    </span>
+                </div>
+                <div class="cell artists">
+                    @foreach (var artist in context.Item.Artists.Index())
+                    {
+                        <a href="@Redirects.GetArtistHref(artist.Item.Id)" @onclick:stopPropagation>
+                            <span class="a-link">@artist.Item.Name</span>
+                            @if (artist.Index != context.Item.Artists.Count - 1)
+                            {
+                                <span>, </span>
+                            }
+                        </a>
+                    }
+                </div>
+                <div class="cell album"><a href="@Redirects.GetAlbumHref(context.Item.AlbumId)"
+                                           @onclick:stopPropagation><span class="a-link">@context.Item.Album</span></a>
+                </div>
+                <div class="cell year">@(context.Item.RecordedDate?.ToString("yyyy-MM-dd") ?? context.Item.Year.ToString())</div>
+                <div class="cell right">@context.Item.PlayCount</div>
+                @if (ShowControls)
+                {
+                    <button type="button"
+                            class="cell remove-button"
+                            @onclick="() => RemoveTrack(context.Index)"
+                            @onclick:stopPropagation
+                            title="@(ShowQueueControls ? "Remove from queue" : "Remove from playlist")">
+                        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                            <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                            <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                }
+            </div>
+
+        </Virtualize>
+    </div>
+</div>
+
+@if (_showPlaylistChoice)
+{
+    <div class="modal-backdrop fade show" @onclick="CloseModal"></div>
+
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Overwrite playlist?</h5>
+                        <button class="btn-close" @onclick="CloseModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        There is already a queue active. Do you want to add to the current queue or overwrite?
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @onclick="OverwriteQueue">Overwrite current queue</button>
+                        <button class="btn btn-primary" @onclick="AddToQueue">Add to current queue</button>
+                        <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<TrackDetailsModal TrackId="_trackInfoId" OnClose="CloseTrackInfo"/>

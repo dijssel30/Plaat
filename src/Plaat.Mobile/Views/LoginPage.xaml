@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False"
+             Title="Log in">
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="16" VerticalOptions="Center">
+            <Label Text="Plaat" FontSize="34" FontFamily="SoraBold" HorizontalOptions="Center" Margin="0,0,0,6" />
+
+            <Entry Placeholder="Server address (e.g. http://192.168.1.10:5014)" Text="{Binding ServerAddress}"
+                   Keyboard="Url" ReturnType="Next" FontSize="13" Opacity="0.8" />
+
+            <Entry Placeholder="Username" Text="{Binding Username}" ReturnType="Next" />
+            <Entry Placeholder="Password" Text="{Binding Password}" IsPassword="True" ReturnType="Go"
+                   ReturnCommand="{Binding LoginCommand}" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Danger}" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Button Text="Log in" Style="{StaticResource PillPrimary}" Command="{Binding LoginCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

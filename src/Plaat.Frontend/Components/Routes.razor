@@ -1,0 +1,44 @@
+﻿@using Plaat.Frontend.Auth
+@rendermode InteractiveServer
+
+@if (_initialized)
+{
+    <Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin/>
+                </NotAuthorized>
+                <Authorizing>
+                    <p class="text-center mt-5">Checking authentication...</p>
+                </Authorizing>
+            </AuthorizeRouteView>
+            
+            <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+        </Found>
+    </Router>
+}
+
+@code{
+    [Inject] 
+    public required AuthService AuthService { get; init; }
+
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+        
+        using var cts = new CancellationTokenSource(Timeouts.NormalTimeout);
+
+        await AuthService.RestoreSession(cts.Token);
+
+        _initialized = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

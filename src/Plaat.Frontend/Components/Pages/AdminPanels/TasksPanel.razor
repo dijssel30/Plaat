@@ -1,0 +1,70 @@
+<div class="admin-section">
+    @if (_message is not null)
+    {
+        <div class="@(_error ? "alert alert-danger" : "alert alert-success")">@_message</div>
+    }
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Task</th>
+            <th>Status</th>
+            <th>Working on</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Folder scan</td>
+            <td>
+                <span class="@(_status.ScanBusy ? "badge bg-warning text-dark" : "badge bg-success")">
+                    @(_status.ScanBusy ? "Running" : "Idle")
+                </span>
+            </td>
+            <td>@(_status.ScanCurrentFolder ?? "-")</td>
+            <td>
+                <button
+                    class="btn btn-primary"
+                    disabled="@(_status.ScanBusy || _isTriggeringScan)"
+                    @onclick="StartScan">
+                    @(_isTriggeringScan ? "Starting..." : "Start scan")
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>Convert queue</td>
+            <td>
+                <span class="@(_status.ConvertBusy ? "badge bg-warning text-dark" : "badge bg-success")">
+                    @(_status.ConvertBusy ? "Running" : "Idle")
+                </span>
+            </td>
+            <td>@(_status.ConvertCurrentItems.Count > 0 ? string.Join(", ", _status.ConvertCurrentItems) : "-")</td>
+            <td>
+                <button
+                    class="btn btn-primary"
+                    disabled="@(_status.ConvertBusy || _isTriggeringConvert)"
+                    @onclick="StartConvert">
+                    @(_isTriggeringConvert ? "Starting..." : "Start convert")
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>Loudness analysis</td>
+            <td>
+                <span class="@(_status.LoudnessAnalysisBusy ? "badge bg-warning text-dark" : "badge bg-success")">
+                    @(_status.LoudnessAnalysisBusy ? "Running" : "Idle")
+                </span>
+            </td>
+            <td>@(_status.LoudnessAnalysisBusy ? $"{_status.LoudnessAnalysisProcessed} / {_status.LoudnessAnalysisTotal}" : "-")</td>
+            <td>
+                <button
+                    class="btn btn-primary"
+                    disabled="@(_status.LoudnessAnalysisBusy || _isTriggeringLoudnessAnalysis)"
+                    @onclick="StartLoudnessAnalysis">
+                    @(_isTriggeringLoudnessAnalysis ? "Starting..." : "Analyze loudness")
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

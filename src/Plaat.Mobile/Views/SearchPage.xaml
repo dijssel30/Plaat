@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:player="clr-namespace:Plaat.Mobile.Views.Player"
+             xmlns:trackActions="clr-namespace:Plaat.Mobile.Views.TrackActions"
+             xmlns:selectors="clr-namespace:Plaat.Mobile.Selectors"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             xmlns:contract="clr-namespace:Plaat.Contract;assembly=Plaat.Contract"
+             xmlns:models="clr-namespace:Plaat.Contract.Models;assembly=Plaat.Contract"
+             x:Class="Plaat.Mobile.Views.SearchPage"
+             x:DataType="vm:SearchViewModel"
+             Title="Search">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="SearchHeaderTemplate" x:DataType="vm:SearchHeader">
+            <Label Text="{Binding Title}" Style="{StaticResource SectionHeader}" Margin="16,18,16,4" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SearchArtistTemplate" x:DataType="models:ArtistOnlyDto">
+            <Grid Padding="16,12">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnArtistTapped" CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+                <Label Text="{Binding Name}" FontFamily="DMSansBold" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SearchAlbumTemplate" x:DataType="models:AlbumOnlyDto">
+            <Grid Padding="16,8" ColumnDefinitions="56,*" ColumnSpacing="12">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAlbumTapped" CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+                <Border Grid.Column="0" Style="{StaticResource Art}">
+                    <Image Source="{Binding Id, Converter={StaticResource AlbumCoverConverter}}"
+                           WidthRequest="56" HeightRequest="56" Aspect="AspectFill" />
+                </Border>
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label Text="{Binding Title}" FontFamily="DMSansBold" LineBreakMode="TailTruncation" />
+                    <Label Text="{Binding AllArtists}" FontSize="13" TextColor="{StaticResource TextMuted}" LineBreakMode="TailTruncation" />
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SearchTrackTemplate" x:DataType="contract:TrackDto">
+            <Grid x:Name="TrackRow" Padding="16,8">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTrackTapped" CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+                <Grid.Behaviors>
+                    <behaviors:TouchBehavior LongPressCompleted="OnTrackLongPressed"
+                                              LongPressCommandParameter="{Binding Source={x:Reference TrackRow}, Path=BindingContext}" />
+                </Grid.Behaviors>
+                <VerticalStackLayout Spacing="0">
+                    <Label Text="{Binding Title}" />
+                    <Label Text="{Binding AllArtists}" FontSize="12" TextColor="{StaticResource TextMuted}" />
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
+
+        <selectors:SearchItemTemplateSelector x:Key="SearchItemTemplateSelector"
+                                              HeaderTemplate="{StaticResource SearchHeaderTemplate}"
+                                              ArtistTemplate="{StaticResource SearchArtistTemplate}"
+                                              AlbumTemplate="{StaticResource SearchAlbumTemplate}"
+                                              TrackTemplate="{StaticResource SearchTrackTemplate}" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <SearchBar Grid.Row="0" Placeholder="Search tracks, albums and artists" Text="{Binding Search}" />
+
+        <Label Grid.Row="1" Text="Start typing to search your library." Margin="16" TextColor="{StaticResource TextMuted}"
+               VerticalOptions="Start"
+               IsVisible="{Binding HasQuery, Converter={StaticResource InvertedBoolConverter}}" />
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Results}"
+                        IsVisible="{Binding HasQuery}"
+                        ItemTemplate="{StaticResource SearchItemTemplateSelector}" />
+
+        <player:MiniPlayerBar Grid.Row="2" />
+
+        <trackActions:TrackActionsSheet x:Name="ActionsSheet" Grid.Row="0" Grid.RowSpan="3" />
+    </Grid>
+</ContentPage>

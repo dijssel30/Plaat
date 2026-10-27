@@ -1,0 +1,172 @@
+@page "/stats"
+
+<PageTitle>Stats</PageTitle>
+
+<div class="stats-head">
+    <h3>Stats</h3>
+
+    <div class="switches">
+        <div class="range-switch" role="group" aria-label="Time range">
+            @foreach (var (range, label) in RangeOptions)
+            {
+                <button type="button" class="@(range == _range ? "active" : null)"
+                        aria-pressed="@(range == _range)" disabled="@_loading"
+                        @onclick="() => SetRange(range)">@label</button>
+            }
+        </div>
+
+        <div class="range-switch" role="group" aria-label="Whose plays to count">
+            @foreach (var (scope, label) in ScopeOptions)
+            {
+                <button type="button" class="@(scope == _scope ? "active" : null)"
+                        aria-pressed="@(scope == _scope)" disabled="@_loading"
+                        @onclick="() => SetScope(scope)">@label</button>
+            }
+        </div>
+    </div>
+</div>
+
+@if (_stats is null)
+{
+    <p class="stats-note">Loading...</p>
+}
+else
+{
+    <div class="library-stats">
+        <div class="stat"><span class="label">Tracks</span><span>@_stats.Library.TrackCount.ToString("N0")</span></div>
+        <div class="stat"><span class="label">Albums</span><span>@_stats.Library.AlbumCount.ToString("N0")</span></div>
+        <div class="stat"><span class="label">Artists</span><span>@_stats.Library.ArtistCount.ToString("N0")</span></div>
+        <div class="stat"><span class="label">Total duration</span><span>@FormatDuration(_stats.Library.TotalDuration)</span></div>
+        <div class="stat"><span class="label">Possibly corrupt</span><span>@_stats.Library.PossiblyCorruptCount.ToString("N0")</span></div>
+    </div>
+
+    <section class="panel @(_loading ? "busy" : null)">
+        <header class="panel-head">
+            <h4>Plays over time</h4>
+            <span class="panel-note">@PlaysNote</span>
+        </header>
+
+        @if (_playCounts.Length == 0)
+        {
+            <p class="stats-note">@NoPlaysNote</p>
+        }
+        else
+        {
+            <BarChart Labels="_playLabels" Counts="_playCounts" Unit="plays"/>
+        }
+    </section>
+
+    <section class="panel @(_loading ? "busy" : null)">
+        <header class="panel-head">
+            <h4>Time of day</h4>
+            <span class="panel-note">@_peakNote</span>
+        </header>
+
+        @if (_hourCounts.Length == 0)
+        {
+            <p class="stats-note">@NoPlaysNote</p>
+        }
+        else
+        {
+            <BarChart Labels="_hourLabels" Counts="_hourCounts" Unit="plays"
+                      Accent="var(--accent-2)" HoverAccent="var(--accent)"/>
+        }
+    </section>
+
+    <div class="panel-grid">
+        <section class="panel @(_loading ? "busy" : null)">
+            <header class="panel-head">
+                <h4>Most played artists</h4>
+                <span class="panel-note">@Counted(_topArtists.Count, _stats.TopArtists.Count, "artist", "artists")</span>
+            </header>
+            @if (_topArtists.Count == 0)
+            {
+                <p class="stats-note">@NoPlaysNote</p>
+            }
+            else
+            {
+                <RankedBars Items="_topArtists" Accent="var(--accent-2)" Unit="plays"/>
+            }
+        </section>
+
+        <section class="panel @(_loading ? "busy" : null)">
+            <header class="panel-head">
+                <h4>Most played genres</h4>
+                <span class="panel-note">@Counted(_topGenres.Count, _stats.TopGenres.Count, "genre", "genres")</span>
+            </header>
+            @if (_topGenres.Count == 0)
+            {
+                <p class="stats-note">@NoPlaysNote</p>
+            }
+            else
+            {
+                <RankedBars Items="_topGenres" Unit="plays"/>
+            }
+        </section>
+    </div>
+
+    @* Collection make-up rather than listening: track counts, so unaffected by range and scope. *@
+    <div class="panel-grid">
+        <section class="panel">
+            <header class="panel-head">
+                <h4>Artists by tracks</h4>
+                <span class="panel-note">@Counted(_trackArtists.Count, _stats.Library.ArtistBreakdown.Count, "artist", "artists")</span>
+            </header>
+            @if (_stats.Library.ArtistBreakdown.Count == 0)
+            {
+                <p class="stats-note">No tracks scanned yet.</p>
+            }
+            else
+            {
+                <RankedBars Items="_trackArtists" Accent="var(--violet)" Unit="tracks"/>
+            }
+        </section>
+
+        <section class="panel">
+            <header class="panel-head">
+                <h4>Genres by tracks</h4>
+                <span class="panel-note">@Counted(_trackGenres.Count, _stats.Library.GenreBreakdown.Count, "genre", "genres")</span>
+            </header>
+            @if (_stats.Library.GenreBreakdown.Count == 0)
+            {
+                <p class="stats-note">No genre tags found.</p>
+            }
+            else
+            {
+                <RankedBars Items="_trackGenres" Accent="var(--violet)" Unit="tracks"/>
+            }
+        </section>
+
+        <section class="panel">
+            <header class="panel-head">
+                <h4>Format breakdown</h4>
+                <span class="panel-note">@Counted(_formats.Count, _stats.Library.FormatBreakdown.Count, "format", "formats")</span>
+            </header>
+            @if (_stats.Library.FormatBreakdown.Count == 0)
+            {
+                <p class="stats-note">No tracks scanned yet.</p>
+            }
+            else
+            {
+                <RankedBars Items="_formats" Accent="var(--violet)" Unit="tracks"/>
+            }
+        </section>
+    </div>
+
+    <section class="panel">
+        <header class="panel-head">
+            <h4>Library growth</h4>
+            <span class="panel-note">@GrowthNote</span>
+        </header>
+
+        @if (_growthCounts.Length == 0)
+        {
+            <p class="stats-note">No tracks scanned yet.</p>
+        }
+        else
+        {
+            <BarChart Labels="_growthLabels" Counts="_growthCounts" Unit="tracks"
+                      Accent="var(--violet)" HoverAccent="var(--accent-2)"/>
+        }
+    </section>
+}

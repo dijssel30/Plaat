@@ -1,0 +1,80 @@
+@page "/search"
+
+<PageTitle>Search</PageTitle>
+
+<h3>Search</h3>
+
+<div class="search-bar">
+    <input class="search-input"
+           placeholder="Search tracks, albums and artists..."
+           @bind="SearchText"
+           @bind:event="oninput"
+           autofocus/>
+</div>
+
+@if (!HasQuery)
+{
+    <p class="search-hint">Start typing to search your library.</p>
+}
+else if (_searching && IsEmpty)
+{
+    <p class="search-hint">Searching…</p>
+}
+else
+{
+    <div class="search-results">
+        <section class="search-section">
+            <h4>Artists (@_results.Artists.Count)</h4>
+            @if (_results.Artists.Count == 0)
+            {
+                <p class="search-empty">No matching artists.</p>
+            }
+            else
+            {
+                <div class="artist-list-container">
+                    @foreach (var artist in _results.Artists)
+                    {
+                        <div class="artist-row">
+                            <NavLink class="artist-link" href="@Redirects.GetArtistHref(artist.Id)">
+                                <span class="artist-link-text">@artist.Name</span>
+                            </NavLink>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="search-section">
+            <h4>Albums (@_results.Albums.Count)</h4>
+            @if (_results.Albums.Count == 0)
+            {
+                <p class="search-empty">No matching albums.</p>
+            }
+            else
+            {
+                <div class="album-list-container">
+                    @foreach (var album in _results.Albums)
+                    {
+                        <div class="album-row">
+                            <NavLink class="album-link" href="@Redirects.GetAlbumHref(album.Id)">
+                                <span class="album-link-text">@album.AllArtists - @album.Title</span>
+                            </NavLink>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="search-section">
+            <h4>Tracks (@_results.Tracks.Count)</h4>
+            @if (_results.Tracks.Count == 0)
+            {
+                <p class="search-empty">No matching tracks.</p>
+            }
+            else
+            {
+                <MusicFileList Music="@_results.Tracks" ShowSearchBar="false"/>
+            }
+        </section>
+    </div>
+}

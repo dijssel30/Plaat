@@ -1,0 +1,90 @@
+<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="icon icon-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="search">
+                <span class="icon icon-search" aria-hidden="true"></span> Search
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="albums">
+                <span class="icon icon-album" aria-hidden="true"></span> Albums
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="artists">
+                <span class="icon icon-artist" aria-hidden="true"></span> Artists
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tracks">
+                <span class="icon icon-track" aria-hidden="true"></span> Tracks
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="queue">
+                <span class="icon icon-queue" aria-hidden="true"></span> Queue
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stats">
+                <span class="icon icon-stats" aria-hidden="true"></span> Stats
+            </NavLink>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-item px-3 playlists-header">
+            <NavLink class="nav-link" href="playlists">
+                Playlists
+            </NavLink>
+        </div>
+        @foreach (var playlist in OrderedPlaylists)
+        {
+            <div class="@PlaylistItemClass(playlist)"
+                 @ondragover="() => OnPlaylistDragOver(playlist)"
+                 @ondragover:preventDefault
+                 @ondragleave="() => OnPlaylistDragLeave(playlist)"
+                 @ondrop="() => OnPlaylistDrop(playlist)"
+                 @ondrop:preventDefault>
+                <NavLink class="nav-link playlist-link" href="@($"playlists/{playlist.PlaylistName}")">
+                    @playlist.PlaylistName
+                </NavLink>
+            </div>
+        }
+        <div class="nav-divider"></div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="settings">
+                <span class="icon icon-settings" aria-hidden="true"></span> Settings
+            </NavLink>
+        </div>
+
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="admin">
+                        <span class="icon icon-admin" aria-hidden="true"></span> Admin
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </nav>
+
+    <!--
+        A sibling of <nav> rather than its last item: <nav> is the part that scrolls (see
+        .nav-scrollable .nav in the CSS) when the list is too long for the sidebar's height, and
+        sign-out needs to stay reachable and in a fixed spot below it regardless - inside the
+        scrolling element, it would scroll out of view (or, pinned there with position: sticky,
+        land on top of whatever item the scroll happened to end on) instead.
+    -->
+    <div class="nav-item px-3 sign-out">
+        <button type="submit" class="nav-link btn btn-link" @onclick="Logout">
+            <span class="icon icon-logout" aria-hidden="true"></span> Sign out
+        </button>
+    </div>
+</div>

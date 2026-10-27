@@ -1,0 +1,191 @@
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.view-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.cover-size-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 130px;
+    height: 4px;
+    border-radius: 3px;
+    background: var(--line-strong);
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+}
+
+.cover-size-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+.cover-size-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.favorites-toggle-button,
+.recently-added-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    padding: 0 16px;
+    height: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.favorites-toggle-button:hover,
+.recently-added-toggle-button:hover {
+    background: var(--panel-2);
+}
+
+.favorites-toggle-button.active,
+.recently-added-toggle-button.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.view-toggle {
+    display: flex;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    background: var(--panel);
+    padding: 3px;
+    gap: 3px;
+}
+
+.view-toggle-button {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    padding: 0 16px;
+    height: 30px;
+    border-radius: var(--radius-ctl);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.view-toggle-button:hover {
+    background: transparent;
+    color: var(--text);
+}
+
+.view-toggle-button.active {
+    background: var(--grad);
+    color: #fff;
+    font-weight: 700;
+}
+
+.album-grid-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--cover-size, 180px), 1fr));
+    gap: 22px;
+    padding: 16px 0 40px 0;
+    width: 100%;
+}
+
+/* Virtualize's spacer elements (rendered before/after the currently-rendered batches, marked
+   aria-hidden="true" and otherwise classless) sit as direct children of the grid alongside the
+   album cards - they must span the full row width, otherwise each one occupies a single grid
+   cell (invisibly, since it has zero height) and pushes every real card after it one column to
+   the right, leaving what looks like an empty slot at the start of the row. */
+.album-grid-list ::deep [aria-hidden="true"] {
+    grid-column: 1 / -1;
+}
+
+.album-grid-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+}
+
+.album-grid-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-art);
+    transition: transform 160ms ease;
+}
+
+.album-grid-card:hover img {
+    transform: translateY(-3px);
+}
+
+.album-grid-card span {
+    text-align: left;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--muted);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.album-grid-card:hover span {
+    color: var(--text);
+}
+
+.album-list-container {
+    flex: 1;
+    padding: 8px 0 40px 0;
+    height: 100%;
+    width: 100%;
+}
+
+.album-row {
+    padding: 0 16px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    transition: background 140ms ease;
+}
+
+.album-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.album-link {
+    display: block;
+    text-decoration: none;
+    min-width: 0;
+}
+
+.album-link-text {
+    color: var(--text) !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none !important;
+}

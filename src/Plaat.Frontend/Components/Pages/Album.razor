@@ -1,0 +1,72 @@
+﻿@page "/albums/{AlbumId:int}"
+@using MudBlazor
+
+<PageTitle>@_album?.Title</PageTitle>
+
+@if (!_loading && _album is null)
+{
+    <h3>Album not found</h3>
+    <p>This album may have been removed, or the link is incorrect.</p>
+}
+else if (_album is not null)
+{
+    <div class="album-page-header">
+        <div class="album-cover-wrapper">
+            <img src="@GetImg()" alt="cover" class="album-cover-img"/>
+            @if (_uploadingCover)
+            {
+                <div class="album-cover-overlay">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Medium"/>
+                </div>
+            }
+        </div>
+        <div class="album-header-info">
+            <h2 class="album-title">@_album?.Title</h2>
+            <p class="album-artists">@_album?.AllArtists</p>
+            @if (YearLabel is not null)
+            {
+                <p class="album-year">@YearLabel</p>
+            }
+            <div class="album-action-buttons">
+                <button class="action-btn" @onclick="PlayAll"><span class="icon icon-play"></span> Play</button>
+                <button class="action-btn @(MusicPlayList.IsShuffled ? "active" : "")" @onclick="ShuffleAll"><span class="icon icon-shuffle"></span> Shuffle</button>
+                <button class="action-btn @(_isFavorite ? "active" : "")" @onclick="ToggleFavorite"><span class="icon icon-heart"></span> @(_isFavorite ? "Favorited" : "Favorite")</button>
+                <AuthorizeView Roles="Admin">
+                    <MudMenu Icon="@Icons.Material.Filled.Edit"
+                             AriaLabel="Edit album"
+                             Dense="true"
+                             AnchorOrigin="Origin.BottomLeft"
+                             TransformOrigin="Origin.TopLeft">
+                        <MudMenuItem Icon="@Icons.Material.Filled.Image"
+                                     OnClick="OpenCoverPicker"
+                                     Disabled="_uploadingCover">
+                            Upload cover image
+                        </MudMenuItem>
+                    </MudMenu>
+                    <MudFileUpload @ref="_coverUpload"
+                                   T="IBrowserFile"
+                                   Accept="image/jpeg,image/png,image/webp"
+                                   FilesChanged="OnCoverImageSelected"
+                                   MaximumFileCount="1"
+                                   Class="d-none"/>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
+
+    @if (_discs.Count > 1)
+    {
+        @foreach (var disc in _discs.Index())
+        {
+            <h3 class="disc-header">@DiscLabel(disc.Index, disc.Item.Number)</h3>
+
+            @* QueueMusic: clicking a track on any disc queues the whole album in disc/track order,
+               so playback carries on into the next disc instead of stopping at this one. *@
+            <MusicFileList Music="@disc.Item.Tracks" QueueMusic="@_musicFileList" ShowSearchBar="false"/>
+        }
+    }
+    else
+    {
+        <MusicFileList Music="@_musicFileList"/>
+    }
+}

@@ -1,0 +1,48 @@
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    /* The row must be exactly as wide as the stars in it: a swipe maps the pointer's position
+       across this box onto the 0-5 range, so any extra width would shift every star. Without it a
+       parent that stretches its children - the details modal's column-flex stat tile does - leaves
+       the box far wider than the stars and the mapping slides out from under them. */
+    width: fit-content;
+    /* The row handles its own pointer gestures - without this a swipe across it on a touch screen
+       would be taken as a page scroll and never reach the pointermove handler. */
+    touch-action: none;
+}
+
+.star {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--faint);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.star-filled {
+    color: var(--accent);
+}
+
+.star:hover:not(:disabled),
+.star:focus-visible:not(:disabled) {
+    color: var(--accent);
+    transform: scale(1.12);
+}
+
+.star:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.star .icon {
+    width: 16px;
+    height: 16px;
+}

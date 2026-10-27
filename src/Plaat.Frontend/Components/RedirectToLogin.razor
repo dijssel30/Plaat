@@ -1,0 +1,13 @@
+@code {
+    [Inject]
+    public required NavigationManager NavigationManager { get; init; }
+
+    protected override void OnInitialized()
+    {
+        var returnUrl = "/" + NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        // Soft navigation on purpose: a forceLoad here starts a full page load that kills the
+        // circuit while NavigateTo's own JS interop call is still in flight, so the navigation
+        // fails with a TaskCanceledException that takes the circuit down with it.
+        NavigationManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(returnUrl)}");
+    }
+}

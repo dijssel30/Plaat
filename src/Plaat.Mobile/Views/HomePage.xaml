@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui.MediaElement"
+             xmlns:behaviors="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:player="clr-namespace:Plaat.Mobile.Views.Player"
+             xmlns:trackActions="clr-namespace:Plaat.Mobile.Views.TrackActions"
+             xmlns:contract="clr-namespace:Plaat.Contract;assembly=Plaat.Contract"
+             xmlns:models="clr-namespace:Plaat.Contract.Models;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Title="Home">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!--
+            The single, app-lifetime MediaElement lives here because Shell keeps TabBar root pages
+            (like this one) alive for the whole app session instead of destroying them on tab
+            switches - so this control (and the native player behind it) survives navigating to
+            other tabs, even though it's only ever visually hosted on this one page. It's audio-only
+            and never shown, so that's fine. See PlaybackEngine.cs for how it's driven.
+        -->
+        <toolkit:MediaElement x:Name="SharedMediaElement" Grid.Row="0"
+                               WidthRequest="1" HeightRequest="1" Opacity="0" InputTransparent="True"
+                               ShouldAutoPlay="False" ShouldShowPlaybackControls="False"
+                               HorizontalOptions="Start" VerticalOptions="Start" />
+
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="12">
+
+                <Label Text="Jump back in" Style="{StaticResource SectionHeader}" Margin="16,14,16,0"
+                       IsVisible="{Binding RecentlyPlayed.Count, Converter={StaticResource IntGreaterThanZeroConverter}}" />
+                <CollectionView ItemsSource="{Binding RecentlyPlayed}"
+                                HeightRequest="{Binding RecentlyPlayed.Count, Converter={StaticResource CountToHeightConverter}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="contract:TrackDto">
+                            <Grid x:Name="PlayedRow" Padding="16,8">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRecentlyPlayedTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Grid.Behaviors>
+                                    <behaviors:TouchBehavior LongPressCompleted="OnTrackLongPressed"
+                                                              LongPressCommandParameter="{Binding Source={x:Reference PlayedRow}, Path=BindingContext}" />
+                                </Grid.Behaviors>
+                                <VerticalStackLayout Spacing="0">
+                                    <Label Text="{Binding Title}" />
+                                    <Label Text="{Binding AllArtists}" FontSize="12" TextColor="{StaticResource TextMuted}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Recently added albums" Style="{StaticResource SectionHeader}" Margin="16,14,16,0"
+                       IsVisible="{Binding RecentlyAddedAlbums.Count, Converter={StaticResource IntGreaterThanZeroConverter}}" />
+                <CollectionView ItemsSource="{Binding RecentlyAddedAlbums}" HeightRequest="152" Margin="16,0"
+                                ItemsLayout="HorizontalList"
+                                IsVisible="{Binding RecentlyAddedAlbums.Count, Converter={StaticResource IntGreaterThanZeroConverter}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:AlbumOnlyDto">
+                            <Grid Padding="0,0,12,0" WidthRequest="112">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAlbumTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <VerticalStackLayout Spacing="7">
+                                    <Border Style="{StaticResource Art}">
+                                        <Image Source="{Binding Id, Converter={StaticResource AlbumCoverConverter}}"
+                                               WidthRequest="112" HeightRequest="112" Aspect="AspectFill" />
+                                    </Border>
+                                    <Label Text="{Binding Title}" FontSize="12" TextColor="{StaticResource TextMuted}"
+                                           LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Recently added tracks" Style="{StaticResource SectionHeader}" Margin="16,14,16,0"
+                       IsVisible="{Binding RecentlyAddedTracks.Count, Converter={StaticResource IntGreaterThanZeroConverter}}" />
+                <CollectionView ItemsSource="{Binding RecentlyAddedTracks}"
+                                HeightRequest="{Binding RecentlyAddedTracks.Count, Converter={StaticResource CountToHeightConverter}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="contract:TrackDto">
+                            <Grid x:Name="AddedRow" Padding="16,8">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRecentlyAddedTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Grid.Behaviors>
+                                    <behaviors:TouchBehavior LongPressCompleted="OnTrackLongPressed"
+                                                              LongPressCommandParameter="{Binding Source={x:Reference AddedRow}, Path=BindingContext}" />
+                                </Grid.Behaviors>
+                                <VerticalStackLayout Spacing="0">
+                                    <Label Text="{Binding Title}" />
+                                    <Label Text="{Binding AllArtists}" FontSize="12" TextColor="{StaticResource TextMuted}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <player:MiniPlayerBar Grid.Row="1" />
+
+        <trackActions:TrackActionsSheet x:Name="ActionsSheet" Grid.Row="0" Grid.RowSpan="2" />
+    </Grid>
+</ContentPage>

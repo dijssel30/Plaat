@@ -1,0 +1,69 @@
+<div class="admin-section">
+    @if (_adminMessage is not null)
+    {
+        <div class="@(_adminError ? "alert alert-danger" : "alert alert-success")">@_adminMessage</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Admin</th>
+                <th>Reset password</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in _users)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@(user.IsAdmin ? "Yes" : "No")</td>
+                    <td>
+                        <input
+                            class="form-control"
+                            type="password"
+                            placeholder="New password"
+                            value="@GetResetPassword(user.Username)"
+                            @onchange="e => SetResetPassword(user.Username, e.Value?.ToString() ?? string.Empty)"/>
+                    </td>
+                    <td class="d-flex gap-2 text-nowrap">
+                        <button
+                            class="btn btn-secondary"
+                            disabled="@(_busyUsername == user.Username)"
+                            @onclick="() => ResetPassword(user.Username)">
+                            Reset
+                        </button>
+                        <button
+                            class="btn btn-secondary"
+                            disabled="@(_busyUsername == user.Username || (user.IsAdmin && user.Username == _currentUsername))"
+                            @onclick="() => ToggleAdmin(user)">
+                            @(user.IsAdmin ? "Revoke admin" : "Make admin")
+                        </button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="settings-card">
+        <h3>Create New User</h3>
+        <div class="form-group">
+            <label>Username</label>
+            <input class="form-control" @bind="_newUsername" placeholder="Username"/>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input class="form-control" type="password" @bind="_newUserPassword" placeholder="Password"/>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" @bind="_newUserIsAdmin" id="newUserIsAdminCheck"/>
+            <label class="form-check-label" for="newUserIsAdminCheck">Admin</label>
+        </div>
+        <button class="btn btn-primary" @onclick="CreateUser" disabled="@_isCreatingUser">
+            @(_isCreatingUser ? "Creating..." : "Create User")
+        </button>
+    </div>
+</div>

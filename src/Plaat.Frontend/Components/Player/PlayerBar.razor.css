@@ -1,0 +1,454 @@
+/* Floating glass dock, inset from the window edges (Aurora). Always the same width - left/right
+   match on desktop too - so it never resizes when fullscreen is toggled; MainLayout.razor.css
+   shortens the sidebar to leave room for it underneath instead. */
+.player-bar {
+    position: fixed;
+    /* --viewport-offset-bottom (set by uiHelpers.js from window.visualViewport)
+       is 0 normally, and negative when the mobile browser's dynamic toolbar has
+       slid out of view - shifting the bar down to close the gap that fixed
+       positioning alone would leave below it (layout viewport vs visual viewport). */
+    bottom: calc(18px + var(--viewport-offset-bottom, 0px));
+    left: 20px;
+    right: 20px;
+    height: 84px;
+    padding: 0 18px;
+    border-radius: var(--radius-panel);
+    background: rgba(18, 16, 22, 0.72);
+    backdrop-filter: blur(26px);
+    -webkit-backdrop-filter: blur(26px);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-panel);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 200;
+}
+
+.player-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.album-cover {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-art);
+}
+
+.track-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.track-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Star rating of the current track. On a wide viewport it rides in the bar next to the track
+   info; the narrow-viewport rule below hides it there (the bar is already three rows deep on a
+   phone) and the fullscreen player shows it instead. */
+.player-stars {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+/* Hidden on desktop: the bar itself stays visible above the overlay (it outranks it on z-index),
+   so the rating is already on screen there and a second copy would just repeat it. */
+.fullscreen-stars {
+    display: none;
+    justify-content: center;
+    padding-top: 2px;
+}
+
+.player-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.player-controls button {
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.player-controls button:hover,
+.player-controls button:focus-visible {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+/* Play/pause: the one filled control. */
+.player-controls button:nth-child(2) {
+    width: 42px;
+    height: 42px;
+    color: #fff;
+    background: var(--grad);
+    box-shadow: 0 10px 24px -10px var(--accent-2);
+}
+
+.player-controls button:nth-child(2):hover {
+    color: #fff;
+    background: var(--grad);
+    opacity: 0.9;
+}
+
+.player-controls button.active {
+    color: var(--accent);
+}
+
+.player-seek {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.time-display {
+    font-size: 0.72rem;
+    color: var(--faint);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.player-right {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+    padding-right: 4px;
+    gap: 6px;
+}
+
+.player-right button {
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.player-right button:hover,
+.player-right button:focus-visible {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.player-right button.active {
+    color: var(--accent);
+}
+
+.player-right button.fullscreen-toggle.active {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 6px;
+    color: var(--muted);
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 90px;
+    height: 4px;
+    border-radius: 3px;
+    background: var(--line-strong);
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: none;
+}
+
+/* ------------------------------------------------------ fullscreen view */
+
+.fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(8, 7, 11, 0.94);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-content {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    padding: 0 40px 120px 40px;
+}
+
+.fullscreen-cover {
+    width: min(56vh, 44vw);
+    height: min(56vh, 44vw);
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: 0 40px 90px -30px #000;
+}
+
+.fullscreen-track-info {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    color: var(--text);
+    /* A fixed width, not max-width: max-width only caps long text, but still shrinks to fit
+       short text - which left the whole (cover + gap + text) row narrower for a short title
+       than a long one, so centering it shifted the cover left/right between tracks. Fixed
+       width keeps the row's total size constant no matter how short or long the text is. */
+    width: 420px;
+    flex: none;
+}
+
+/* Clamped to a single line each (long titles/albums/artist lists get an ellipsis instead of
+   wrapping) so this block's height - and with it the cover's centered position - never
+   depends on how long the track's metadata happens to be. min-width: 0 overrides the flex
+   item default of shrinking no further than its content, which would otherwise defeat the
+   ellipsis entirely. */
+.fullscreen-title,
+.fullscreen-album,
+.fullscreen-artist {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fullscreen-title {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.fullscreen-album {
+    display: block;
+    font-size: 1rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.fullscreen-album:hover {
+    color: var(--accent);
+}
+
+.fullscreen-artist {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--faint);
+}
+
+.fullscreen-artist-link {
+    color: var(--faint);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.fullscreen-artist-link:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 640.98px) {
+    .player-bar {
+        left: 12px;
+        right: 12px;
+        bottom: calc(10px + var(--viewport-offset-bottom, 0px));
+        height: 134px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        align-content: space-between;
+        padding: 8px 10px;
+        box-sizing: border-box;
+        row-gap: 4px;
+        column-gap: 8px;
+    }
+
+    .player-left {
+        order: 1;
+        flex: 1 1 100%;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .album-cover {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Let player-controls and player-seek participate directly in the
+       player-bar row-wrap layout below, alongside player-right, instead
+       of being isolated in their own column. */
+    .player-center {
+        display: contents;
+    }
+
+    /* Transport and the queue/fullscreen/close buttons share a single row. */
+    .player-controls {
+        order: 2;
+        flex: 0 0 auto;
+        justify-content: center;
+        gap: 2px;
+    }
+
+    .player-controls button {
+        width: 36px;
+        height: 36px;
+        margin: 0;
+    }
+
+    .player-controls button:nth-child(2) {
+        width: 40px;
+        height: 40px;
+    }
+
+    .volume-control {
+        display: none;
+    }
+
+    /* The narrow bar has no room for the stars - the fullscreen player carries them here. */
+    .player-stars {
+        display: none;
+    }
+
+    .fullscreen-stars {
+        display: flex;
+    }
+
+    /* The stars are tap and swipe targets here, so give them finger-sized padding. ::deep, because
+       they are rendered by StarRating and carry that component's scope, not this one's. */
+    .fullscreen-stars ::deep .star {
+        padding: 6px 4px;
+    }
+
+    .player-right {
+        order: 3;
+        position: static;
+        padding: 0;
+        flex: 0 0 auto;
+        gap: 0;
+    }
+
+    .player-right button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .player-seek {
+        order: 4;
+        flex: 1 1 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .fullscreen-content {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+    }
+
+    .fullscreen-cover {
+        width: min(50vh, 70vw);
+        height: min(50vh, 70vw);
+    }
+
+    .fullscreen-track-info {
+        align-items: center;
+        /* The base rule's fixed 420px width (see the desktop rule's comment) is wider than a
+           phone viewport - shrink to fit here instead. */
+        width: 100%;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+    .player-center {
+        min-width: 280px;
+    }
+}

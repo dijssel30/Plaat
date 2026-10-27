@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Plaat - "Aurora" theme (dark only)
+
+   Tokens + base element styling. Component-specific styling lives in the
+   scoped *.razor.css files, which read the custom properties defined here.
+   ========================================================================== */
+
+:root {
+    /* Surfaces: near-black ground, translucent glass panels on top of it. */
+    --bg: #08070b;
+    --panel: rgba(255, 255, 255, 0.045);
+    --panel-2: rgba(255, 255, 255, 0.07);
+    --panel-solid: #16141b;
+    --line: rgba(255, 255, 255, 0.09);
+    --line-strong: rgba(255, 255, 255, 0.18);
+
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.62);
+    --faint: rgba(255, 255, 255, 0.42);
+
+    /* Accents - unchanged from the previous theme. */
+    --accent: #ff6a00;
+    --accent-2: #ff3d7f;
+    --purple: #7f00ff;
+    /* A lighter step of --purple, for small marks that #7f00ff is too dark to carry. */
+    --violet: #9834fd;
+    --grad: linear-gradient(120deg, #ff6a00, #ff3d7f);
+    --grad-smart: linear-gradient(120deg, #7f00ff, #ff3d7f);
+
+    --danger: #ff5577;
+    --success: #35c88a;
+
+    --radius-panel: 22px;
+    --radius-card: 16px;
+    --radius-ctl: 999px;
+    --radius-input: 12px;
+
+    --shadow-panel: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
+    --shadow-art: 0 18px 40px -20px rgba(0, 0, 0, 0.9);
+
+    --font: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Sora', 'DM Sans', system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Legacy names kept so older rules keep resolving. */
+    --bg-color: var(--bg);
+    --surface-color: var(--panel-solid);
+    --primary-color: var(--accent);
+    --secondary-color: rgba(255, 255, 255, 0.12);
+    --text-color: var(--text);
+    --text-muted: var(--muted);
+    --border-color: var(--line);
+    --hover-color: var(--panel-2);
+    --error-color: var(--danger);
+    --success-color: var(--success);
+    --accent-pink: var(--accent-2);
+}
+
+html {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg);
+    /* The aurora wash. Fixed so it stays put while the page scrolls. */
+    background-image:
+        radial-gradient(680px 420px at 8% -6%, rgba(255, 106, 0, 0.16), transparent 62%),
+        radial-gradient(720px 460px at 92% 4%, rgba(255, 61, 127, 0.14), transparent 60%),
+        radial-gradient(900px 620px at 60% 108%, rgba(127, 0, 255, 0.13), transparent 62%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-color);
+    font-family: var(--font);
+    font-size: 14.5px;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+h3 {
+    font-size: 1.55rem;
+}
+
+h4 {
+    font-size: 1.15rem;
+}
+
+a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--accent);
+}
+
+hr {
+    border-color: var(--line);
+}
+
+/* --------------------------------------------------------------- surfaces */
+
+.container, .content, .card {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.card {
+    background: var(--panel);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    padding: 22px;
+}
+
+/* --------------------------------------------------------------- controls */
+
+button, .btn {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-ctl);
+    font-family: var(--font);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+
+button:hover, .btn:hover {
+    background: var(--panel-2);
+}
+
+.btn-primary {
+    background: var(--grad);
+    border-color: transparent;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 10px 26px -12px var(--accent-2);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background: var(--grad);
+    border-color: transparent;
+    color: #fff;
+    opacity: 0.88;
+}
+
+.btn-primary:disabled {
+    background: var(--grad);
+    border-color: transparent;
+    opacity: 0.45;
+}
+
+.btn-secondary {
+    background: var(--panel-2);
+    border-color: var(--line);
+    color: var(--text);
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+    background: var(--line-strong);
+    border-color: var(--line);
+    color: var(--text);
+}
+
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+input, textarea, select {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    border: 1px solid var(--line);
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-input);
+    font-family: var(--font);
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--faint);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+select option {
+    background: #16141b;
+    color: var(--text);
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-input);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text-color);
+    border-color: var(--accent);
+    box-shadow: none;
+}
+
+input[type="range"] {
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--accent);
+}
+
+/* ----------------------------------------------------------------- tables */
+
+.table {
+    color: var(--text);
+    border-color: var(--line);
+    --bs-table-color: var(--text);
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--line);
+    --bs-table-striped-color: var(--text);
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+    --bs-table-hover-color: var(--text);
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.06);
+}
+
+.table > thead {
+    color: var(--faint);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.7rem 0.75rem;
+    background-color: transparent;
+}
+
+/* ----------------------------------------------------------------- pieces */
+
+.badge {
+    border-radius: var(--radius-ctl);
+    font-weight: 600;
+}
+
+.badge.bg-success {
+    background: rgba(53, 200, 138, 0.18) !important;
+    color: var(--success);
+}
+
+.badge.bg-warning {
+    background: rgba(255, 106, 0, 0.18) !important;
+    color: var(--accent) !important;
+}
+
+.badge.bg-danger {
+    background: rgba(255, 61, 127, 0.18) !important;
+    color: var(--accent-2);
+}
+
+.alert {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--text);
+}
+
+.alert-danger {
+    border-color: rgba(255, 61, 127, 0.4);
+    background: rgba(255, 61, 127, 0.12);
+    color: #ffb3c8;
+}
+
+.alert-success {
+    border-color: rgba(53, 200, 138, 0.4);
+    background: rgba(53, 200, 138, 0.12);
+    color: #9ce8c8;
+}
+
+/* Admin tab strip. */
+.nav-pills {
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+}
+
+.nav-pills .nav-link {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--muted);
+    font-weight: 500;
+    padding: 0.6rem 0.95rem;
+}
+
+.nav-pills .nav-link:hover {
+    background: transparent;
+    color: var(--text);
+}
+
+.nav-pills .nav-link.active {
+    background: transparent;
+    color: var(--text);
+    border-bottom-color: var(--accent);
+}
+
+.text-muted {
+    color: var(--muted) !important;
+}
+
+/* -------------------------------------------------------------- scrollbar */
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+* {
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    scrollbar-width: thin;
+}
+
+/* ------------------------------------------------------------------ icons */
+
+.icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-mode: alpha;
+    mask-mode: alpha;
+}
+
+.icon-chevron {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-previous { -webkit-mask-image: url('/icons/previous.svg'); mask-image: url('/icons/previous.svg'); }
+.icon-next { -webkit-mask-image: url('/icons/next.svg'); mask-image: url('/icons/next.svg'); }
+.icon-play { -webkit-mask-image: url('/icons/play.svg'); mask-image: url('/icons/play.svg'); }
+.icon-pause { -webkit-mask-image: url('/icons/pause.svg'); mask-image: url('/icons/pause.svg'); }
+.icon-shuffle { -webkit-mask-image: url('/icons/shuffle.svg'); mask-image: url('/icons/shuffle.svg'); }
+.icon-repeat { -webkit-mask-image: url('/icons/repeat.svg'); mask-image: url('/icons/repeat.svg'); }
+.icon-repeat-one { -webkit-mask-image: url('/icons/repeat-one.svg'); mask-image: url('/icons/repeat-one.svg'); }
+.icon-volume-high { -webkit-mask-image: url('/icons/volume-high.svg'); mask-image: url('/icons/volume-high.svg'); }
+.icon-volume-low { -webkit-mask-image: url('/icons/volume-low.svg'); mask-image: url('/icons/volume-low.svg'); }
+.icon-volume-mute { -webkit-mask-image: url('/icons/volume-mute.svg'); mask-image: url('/icons/volume-mute.svg'); }
+.icon-chevron-up { -webkit-mask-image: url('/icons/chevron-up.svg'); mask-image: url('/icons/chevron-up.svg'); }
+.icon-chevron-down { -webkit-mask-image: url('/icons/chevron-down.svg'); mask-image: url('/icons/chevron-down.svg'); }
+.icon-close { -webkit-mask-image: url('/icons/close.svg'); mask-image: url('/icons/close.svg'); }
+.icon-pin { -webkit-mask-image: url('/icons/pin.svg'); mask-image: url('/icons/pin.svg'); }
+.icon-trash { -webkit-mask-image: url('/icons/trash.svg'); mask-image: url('/icons/trash.svg'); }
+.icon-queue { -webkit-mask-image: url('/icons/queue.svg'); mask-image: url('/icons/queue.svg'); }
+.icon-heart { -webkit-mask-image: url('/icons/heart.svg'); mask-image: url('/icons/heart.svg'); }
+.icon-home { -webkit-mask-image: url('/icons/home.svg'); mask-image: url('/icons/home.svg'); }
+.icon-search { -webkit-mask-image: url('/icons/search.svg'); mask-image: url('/icons/search.svg'); }
+.icon-album { -webkit-mask-image: url('/icons/album.svg'); mask-image: url('/icons/album.svg'); }
+.icon-artist { -webkit-mask-image: url('/icons/artist.svg'); mask-image: url('/icons/artist.svg'); }
+.icon-track { -webkit-mask-image: url('/icons/track.svg'); mask-image: url('/icons/track.svg'); }
+.icon-clock { -webkit-mask-image: url('/icons/clock.svg'); mask-image: url('/icons/clock.svg'); }
+.icon-stats { -webkit-mask-image: url('/icons/stats.svg'); mask-image: url('/icons/stats.svg'); }
+.icon-playlist { -webkit-mask-image: url('/icons/playlist.svg'); mask-image: url('/icons/playlist.svg'); }
+.icon-settings { -webkit-mask-image: url('/icons/settings.svg'); mask-image: url('/icons/settings.svg'); }
+.icon-admin { -webkit-mask-image: url('/icons/admin.svg'); mask-image: url('/icons/admin.svg'); }
+.icon-logout { -webkit-mask-image: url('/icons/logout.svg'); mask-image: url('/icons/logout.svg'); }
+.icon-star { -webkit-mask-image: url('/icons/star.svg'); mask-image: url('/icons/star.svg'); }
+.icon-star-outline { -webkit-mask-image: url('/icons/star-outline.svg'); mask-image: url('/icons/star-outline.svg'); }

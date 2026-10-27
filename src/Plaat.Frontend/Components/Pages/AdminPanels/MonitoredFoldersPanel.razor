@@ -1,0 +1,48 @@
+<div class="admin-section">
+    @if (_folderMessage is not null)
+    {
+        <div class="@(_folderError ? "alert alert-danger" : "alert alert-success")">@_folderMessage</div>
+    }
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Path</th>
+            <th>Last scanned</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var folder in _monitoredFolders)
+        {
+            <tr>
+                <td>@folder.Path</td>
+                <td>@(folder.LastScannedAt?.ToLocalTime().ToString("g") ?? "Never")</td>
+                <td>
+                    <button
+                        class="btn btn-secondary"
+                        disabled="@(_busyFolderId == folder.Id)"
+                        @onclick="() => RemoveFolder(folder.Id)">
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="settings-card">
+        <h3>Add Folder</h3>
+        <div class="form-group">
+            <label>Folder path</label>
+            <input class="form-control" @bind="_newFolderPath" placeholder="/path/to/music"/>
+        </div>
+        <button class="btn btn-primary" @onclick="AddFolder" disabled="@_isAddingFolder">
+            @(_isAddingFolder ? "Adding..." : "Add Folder")
+        </button>
+    </div>
+
+    <button class="btn btn-primary mt-2" @onclick="ForceRescan" disabled="@_isTriggeringScan">
+        @(_isTriggeringScan ? "Starting..." : "Force Rescan")
+    </button>
+</div>

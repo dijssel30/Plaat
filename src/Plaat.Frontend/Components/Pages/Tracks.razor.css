@@ -1,0 +1,145 @@
+/* Standalone copy of the track-table layout from MusicFileList.razor.css - this page renders its
+   own server-paged Virtualize list rather than going through MusicFileList. */
+
+.track-table {
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.track-table-header,
+.track-table-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 1fr 0.5fr;
+    align-items: center;
+    background-color: transparent;
+    gap: 16px;
+}
+
+.track-table-header {
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--faint);
+    padding: 0 16px 10px 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+.track-table-header > div {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-table-header .sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.track-table-header .sortable:hover {
+    color: var(--text);
+}
+
+.sort-indicator {
+    font-size: 0.85em;
+    color: var(--accent);
+}
+
+.track-table-row {
+    padding: 0 16px;
+    min-height: 52px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background 140ms ease;
+}
+
+.track-table-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.track-table-row.active {
+    background: rgba(255, 106, 0, 0.10);
+}
+
+.track-table-row.active .cell.title {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.track-table-row.placeholder {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.cell {
+    white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cell.title {
+    font-weight: 500;
+}
+
+.cell.artists,
+.cell.album,
+.cell.year,
+.cell.right {
+    color: var(--muted);
+}
+
+.cell.year,
+.cell.right {
+    font-variant-numeric: tabular-nums;
+}
+
+.right {
+    text-align: right;
+}
+
+.a-link {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.a-link:hover {
+    color: var(--accent) !important;
+}
+
+.queue-note {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+    .track-table-header,
+    .track-table-row {
+        grid-template-columns: 2fr 2fr 2fr;
+    }
+
+    .track-table-header .year,
+    .track-table-header .right,
+    .track-table-row .cell.year,
+    .track-table-row .cell.right {
+        display: none;
+    }
+}
+
+@media (max-width: 640.98px) {
+    .track-table-header,
+    .track-table-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .track-table-header .album,
+    .track-table-header .year,
+    .track-table-header .right,
+    .track-table-row .cell.album,
+    .track-table-row .cell.year,
+    .track-table-row .cell.right {
+        display: none;
+    }
+}

@@ -1,0 +1,265 @@
+/* Hero band without art, matching the album/artist headers. */
+.playlist-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.playlist-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(115deg, rgba(255, 106, 0, 0.22), rgba(127, 0, 255, 0.18) 60%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    pointer-events: none;
+}
+
+.playlist-title {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0;
+    min-width: 0;
+}
+
+.playlist-action-buttons {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    padding: 0 18px;
+    height: 38px;
+    font-size: 0.87rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.action-btn:hover {
+    background: var(--panel-2);
+}
+
+.playlist-action-buttons .action-btn:first-child {
+    background: var(--grad);
+    border-color: transparent;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 10px 26px -12px var(--accent-2);
+}
+
+.playlist-action-buttons .action-btn:first-child:hover {
+    opacity: 0.9;
+}
+
+.action-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+@media (max-width: 640.98px) {
+    .playlist-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px 16px;
+    }
+
+    .playlist-title {
+        text-align: center;
+        font-size: 1.6rem;
+    }
+
+    .playlist-action-buttons {
+        justify-content: center;
+    }
+}
+
+/* Edit-rules modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 3, 6, 0.66);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: rgba(24, 21, 29, 0.94);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-panel);
+    padding: 26px 28px;
+    width: 440px;
+    max-width: 95vw;
+    box-shadow: 0 50px 100px -40px #000;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-smart {
+    width: 680px;
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 11px 15px;
+    border-radius: var(--radius-input);
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    border-color: var(--accent);
+}
+
+.modal-error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 0 22px;
+    height: 38px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-ctl);
+    font-size: 0.87rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 120ms ease;
+}
+
+.modal-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.modal-btn-cancel {
+    background: var(--panel-2);
+    border-color: var(--line);
+    color: var(--text);
+}
+
+.modal-btn-cancel:hover {
+    background: var(--line-strong);
+}
+
+.modal-btn-ok {
+    background: var(--grad);
+    color: #fff;
+    font-weight: 700;
+}
+
+.modal-btn-ok:hover:not(:disabled) {
+    background: var(--grad);
+    opacity: 0.88;
+}
+
+.rules-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rules-label {
+    font-size: 0.72rem;
+    color: var(--faint);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+}
+
+.limit-section {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.limit-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 0.87rem;
+    cursor: pointer;
+}
+
+.limit-label {
+    color: var(--muted);
+    font-size: 0.87rem;
+}
+
+.rule-input {
+    flex: 1;
+    padding: 7px 11px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-size: 0.83rem;
+    outline: none;
+    min-width: 0;
+}
+
+.rule-input-number {
+    width: 84px;
+    flex: unset;
+    text-align: center;
+}
+
+.rule-input:focus {
+    border-color: var(--purple);
+}
+
+.rule-input:disabled {
+    opacity: 0.5;
+}

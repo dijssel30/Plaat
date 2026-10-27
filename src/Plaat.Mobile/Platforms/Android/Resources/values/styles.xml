@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        Aurora is dark-only. Theme.MaterialComponents.DayNight (Maui.MainTheme's parent) otherwise
+        colors the system status/nav bars from colorPrimary, which is now the vivid orange accent -
+        that reads as a jarring solid bar against the rest of the dark UI. Override both to the same
+        near-black surface the app itself uses (colorPrimaryDark) so they blend in.
+    -->
+    <style name="Theme.Plaat" parent="Maui.SplashTheme">
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
+</resources>

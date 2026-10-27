@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels.Player"
+             x:Class="Plaat.Mobile.Views.Player.MiniPlayerBar"
+             x:DataType="vm:MiniPlayerBarViewModel"
+             x:Name="Root"
+             IsVisible="{Binding HasQueue}">
+    <!-- Floating dock, mirroring the web player bar: inset from the screen edges
+         with rounded corners so the page shows around it. Fixed dark surface
+         regardless of device theme - the icons ported from Plaat.Frontend are
+         white-on-transparent and need dark chrome to stay visible. -->
+    <Border StrokeThickness="1" BackgroundColor="{StaticResource Surface}"
+            Stroke="{StaticResource Line}" Margin="12,0,12,8">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="18" />
+        </Border.StrokeShape>
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto" Padding="10" ColumnSpacing="12">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBarTapped" />
+            </Grid.GestureRecognizers>
+
+            <Border Grid.Column="0" Style="{StaticResource Art}">
+                <Image Source="{Binding CoverArtUrl}" WidthRequest="44" HeightRequest="44" Aspect="AspectFill" />
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                <Label Text="{Binding CurrentTitle}" TextColor="{StaticResource TextPrimary}"
+                       FontFamily="DMSansBold" FontSize="14" LineBreakMode="TailTruncation" />
+                <Label Text="{Binding CurrentArtist}" TextColor="{StaticResource TextMuted}"
+                       FontSize="12" LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+
+            <Border Grid.Column="2" StrokeThickness="0" Background="{StaticResource AccentGradient}"
+                    WidthRequest="38" HeightRequest="38" VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="19" />
+                </Border.StrokeShape>
+                <ImageButton Source="{Binding PlayPauseIcon}" WidthRequest="18" HeightRequest="18"
+                             BackgroundColor="Transparent" Clicked="OnPlayPauseClicked" />
+            </Border>
+
+            <ImageButton Grid.Column="3" Source="next.svg" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Clicked="OnNextClicked" />
+        </Grid>
+    </Border>
+</ContentView>

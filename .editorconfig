@@ -1,0 +1,33 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+indent_size = 4
+
+# Braces on every control-flow statement
+csharp_prefer_braces = true:warning
+
+# Full method bodies: no expression-bodied members (lambdas are still fine)
+csharp_style_expression_bodied_methods = false:warning
+csharp_style_expression_bodied_constructors = false:warning
+csharp_style_expression_bodied_operators = false:warning
+csharp_style_expression_bodied_properties = false:warning
+csharp_style_expression_bodied_indexers = false:warning
+csharp_style_expression_bodied_accessors = false:warning
+csharp_style_expression_bodied_local_functions = false:warning
+
+# Collection expressions ([]) instead of new List<T>() / new[] { } / Array.Empty<T>()
+dotnet_style_prefer_collection_expression = true:warning
+
+# Seal classes that are not designed for inheritance
+dotnet_diagnostic.CA1852.severity = warning
+
+# Generated code
+[**/Migrations/*.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none

@@ -1,0 +1,70 @@
+@using MudBlazor
+@using Plaat.Frontend.Components.Player
+@inherits LayoutComponentBase
+
+@* Must render (and JS-initialize) before any descendant popovers (MudMenu, etc.) try to register
+   themselves, otherwise components that mount in the same initial render batch as @Body - e.g. the
+   many MudMenu instances in a virtualized track list - can race MudPopoverProvider's own JS setup. *@
+<MudThemeProvider Theme="AuroraTheme" IsDarkMode="true" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+
+<AuthorizeView>
+    <Authorized>
+        <div class="page">
+            <div class="sidebar">
+                <NavMenu/>
+            </div>
+
+            <main>
+                <article class="content px-4">
+                    @Body
+                </article>
+                <PlayerBar/>
+            </main>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    /// <summary>
+    /// Aurora palette for MudBlazor's own components (menus, charts, pickers), so they match the
+    /// hand-written CSS instead of falling back to MudBlazor's default dark theme.
+    /// </summary>
+    private static readonly MudTheme AuroraTheme = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#ff6a00",
+            Secondary = "#ff3d7f",
+            Tertiary = "#7f00ff",
+            Background = "#08070b",
+            Surface = "#16141b",
+            DrawerBackground = "#0d0b11",
+            AppbarBackground = "#0d0b11",
+            TextPrimary = "#ffffff",
+            TextSecondary = "rgba(255, 255, 255, 0.62)",
+            ActionDefault = "rgba(255, 255, 255, 0.62)",
+            Divider = "rgba(255, 255, 255, 0.09)",
+            LinesDefault = "rgba(255, 255, 255, 0.09)",
+            TableLines = "rgba(255, 255, 255, 0.09)",
+            Error = "#ff5577",
+            Success = "#35c88a",
+            Warning = "#ff6a00"
+        },
+        Typography = new Typography
+        {
+            Default = new DefaultTypography { FontFamily = ["DM Sans", "system-ui", "sans-serif"] }
+        },
+        LayoutProperties = new LayoutProperties { DefaultBorderRadius = "12px" }
+    };
+}

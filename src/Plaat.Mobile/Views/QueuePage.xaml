@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:contract="clr-namespace:Plaat.Contract;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             xmlns:behaviors="clr-namespace:Plaat.Mobile.Behaviors"
+             x:Class="Plaat.Mobile.Views.QueuePage"
+             x:DataType="vm:QueueViewModel"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource Bg}"
+             Title="Queue">
+
+    <!--
+        Deliberately no MiniPlayerBar here (unlike every other page): Queue is only ever reached
+        from NowPlayingPage's queue button, and the bar's tap handler pushes a new "nowplaying"
+        route. Including it here let each Player <-> Queue round trip push another pair of pages
+        onto the modal stack instead of just going back to the one already underneath, so Back had
+        to be tapped multiple times to actually leave. Back alone now returns to the existing
+        NowPlayingPage instance. The Shell nav bar is replaced with an explicit header below so
+        there's always a visible, reliable way to leave the page - same dark background as
+        NowPlayingPage, since the close/play icons here are white-on-transparent like the rest of
+        the player chrome and need a dark surface to be visible.
+    -->
+    <Grid RowDefinitions="Auto,*" Padding="16,50,16,0" RowSpacing="12">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+            <ImageButton Grid.Column="0" Source="close.svg" WidthRequest="24" HeightRequest="24"
+                         BackgroundColor="Transparent" Clicked="OnCloseClicked" />
+            <Label Grid.Column="1" Text="Queue" TextColor="{StaticResource TextPrimary}" FontFamily="SoraBold" FontSize="16"
+                   HorizontalTextAlignment="Center" VerticalOptions="Center" />
+        </Grid>
+
+        <CollectionView x:Name="TracksCollectionView" Grid.Row="1" ItemsSource="{Binding Tracks}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:QueueTrackItem">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Remove" BackgroundColor="{StaticResource AccentAlt}" Invoked="OnRemoveInvoked" CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <!--
+                            No native DragGestureRecognizer/DropGestureRecognizer here: those are only
+                            implemented on Windows and Mac Catalyst in .NET MAUI - on Android (and iOS)
+                            none of DragStarting/DragOver/Drop ever fire, which is why "hold the handle
+                            to reorder" previously did nothing. Reordering is done by hand below with a
+                            PanGestureRecognizer on the handle: the row follows the finger (TranslationY)
+                            for direct visual feedback on where it's headed, and the move is committed
+                            to the queue once the finger lifts.
+                        -->
+                        <Grid x:Name="RowRoot" Padding="16,10" ColumnDefinitions="Auto,*,Auto"
+                              BackgroundColor="{Binding IsCurrent, Converter={StaticResource CurrentTrackBackgroundConverter}}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTrackTapped" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Image Grid.Column="0" Source="play.svg" WidthRequest="14" HeightRequest="14"
+                                   IsVisible="{Binding IsCurrent}" Margin="0,0,10,0" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="0">
+                                <Label Text="{Binding Track.Title}" TextColor="{StaticResource TextPrimary}" FontFamily="DMSansBold" />
+                                <Label Text="{Binding Track.AllArtists}" TextColor="{StaticResource TextMuted}" FontSize="12" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="&#8801;" TextColor="{StaticResource TextFaint}" FontSize="20"
+                                   WidthRequest="44" HeightRequest="44"
+                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center" VerticalOptions="Center">
+                                <Label.Behaviors>
+                                    <behaviors:DisallowScrollInterceptBehavior />
+                                </Label.Behaviors>
+                                <Label.GestureRecognizers>
+                                    <PanGestureRecognizer PanUpdated="OnHandlePanUpdated" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

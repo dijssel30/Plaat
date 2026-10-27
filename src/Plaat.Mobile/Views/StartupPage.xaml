@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Plaat.Mobile.Views.StartupPage"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False"
+             Title="Plaat">
+    <VerticalStackLayout Spacing="16" VerticalOptions="Center" HorizontalOptions="Center">
+        <Label Text="Plaat" FontSize="34" FontFamily="SoraBold" HorizontalOptions="Center" />
+        <ActivityIndicator IsRunning="True" />
+    </VerticalStackLayout>
+</ContentPage>

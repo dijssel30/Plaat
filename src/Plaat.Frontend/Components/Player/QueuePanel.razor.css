@@ -1,0 +1,215 @@
+.queue-panel-wrapper {
+    position: relative;
+    display: flex;
+}
+
+.queue-toggle {
+    margin: 0 4px;
+    font-size: 18px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+    transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.queue-toggle:hover,
+.queue-toggle:focus-visible {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.queue-toggle.active {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.queue-panel {
+    position: fixed;
+    right: 16px;
+    /* --viewport-offset-bottom (set by uiHelpers.js) keeps this in sync with the
+       player bar below it when a mobile browser's dynamic toolbar hides/shows. */
+    bottom: calc(120px + var(--viewport-offset-bottom, 0px));
+    width: 360px;
+    max-width: calc(100vw - 32px);
+    max-height: 60vh;
+    background: rgba(20, 18, 24, 0.86);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-panel);
+    display: flex;
+    flex-direction: column;
+    z-index: 250;
+    color: white;
+    overflow: hidden;
+}
+
+.queue-panel-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    padding: 10px;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.queue-tab {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 6px 13px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.queue-tab:hover {
+    color: white;
+}
+
+.queue-tab.active {
+    color: #fff;
+    background: var(--grad);
+}
+
+.queue-panel-close {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: var(--faint);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.queue-panel-close:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.queue-panel-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.queue-panel-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--faint);
+    font-size: 0.85rem;
+}
+
+.queue-panel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.queue-panel-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.queue-panel-row.active {
+    background: rgba(255, 106, 0, 0.12);
+}
+
+.queue-panel-row.reorderable {
+    cursor: grab;
+}
+
+.queue-panel-row.dragging {
+    opacity: 0.4;
+}
+
+.queue-panel-row.drop-before {
+    box-shadow: inset 0 2px 0 0 var(--accent-2);
+}
+
+.queue-panel-row.drop-after {
+    box-shadow: inset 0 -2px 0 0 var(--accent-2);
+}
+
+.queue-panel-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--faint);
+}
+
+.queue-panel-row:hover .queue-panel-drag-handle {
+    color: var(--text);
+}
+
+.queue-panel-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.queue-panel-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.queue-panel-row.active .queue-panel-title {
+    color: var(--accent);
+}
+
+.queue-panel-artist {
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.now-playing-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640.98px) {
+    .queue-panel {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: calc(152px + var(--viewport-offset-bottom, 0px));
+        width: auto;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid var(--line);
+    }
+}

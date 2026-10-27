@@ -1,0 +1,291 @@
+.album-list-container {
+    flex: 1;
+    padding: 8px 0 40px 0;
+    height: 100%;
+    width: 100%;
+}
+
+.album-row {
+    padding: 0 16px;
+    min-height: 48px;
+    border-radius: 12px;
+    transition: background 140ms ease;
+}
+
+.album-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+/* NavLink renders its own <a> wrapper internally, so Blazor CSS isolation never stamps
+   this component's scope attribute onto it - ::deep is required to reach it at all. */
+::deep .album-link {
+    display: block;
+    text-decoration: none;
+}
+
+.album-link-text {
+    color: var(--text) !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none !important;
+}
+
+.playlist-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.playlist-row ::deep .album-link {
+    flex: 1;
+    min-width: 0;
+}
+
+.pin-btn,
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--faint);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: color 120ms ease, background 120ms ease;
+}
+
+.pin-btn:hover,
+.delete-btn:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: var(--text);
+}
+
+.pin-btn.active {
+    color: var(--accent);
+}
+
+.delete-btn:hover {
+    color: var(--accent-2);
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 4px 0 16px 0;
+}
+
+.toolbar-btn {
+    padding: 0 18px;
+    height: 38px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-ctl);
+    font-size: 0.87rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--grad);
+    color: #fff;
+    box-shadow: 0 10px 26px -12px var(--accent-2);
+    transition: opacity 120ms ease;
+}
+
+.toolbar-btn:hover {
+    background: var(--grad);
+    opacity: 0.9;
+}
+
+.toolbar-btn-smart {
+    background: var(--grad-smart);
+    box-shadow: 0 10px 26px -12px var(--purple);
+}
+
+.toolbar-btn-smart:hover {
+    background: var(--grad-smart);
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 3, 6, 0.66);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: rgba(24, 21, 29, 0.94);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-panel);
+    padding: 26px 28px;
+    width: 440px;
+    max-width: 95vw;
+    box-shadow: 0 50px 100px -40px #000;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-smart {
+    width: 680px;
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 11px 15px;
+    border-radius: var(--radius-input);
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    border-color: var(--accent);
+}
+
+.modal-error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.modal-message {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 0 22px;
+    height: 38px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-ctl);
+    font-size: 0.87rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 120ms ease;
+}
+
+.modal-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.modal-btn-cancel {
+    background: var(--panel-2);
+    border-color: var(--line);
+    color: var(--text);
+}
+
+.modal-btn-cancel:hover {
+    background: var(--line-strong);
+}
+
+.modal-btn-ok {
+    background: var(--grad);
+    color: #fff;
+    font-weight: 700;
+}
+
+.modal-btn-ok:hover:not(:disabled) {
+    background: var(--grad);
+    opacity: 0.88;
+}
+
+.modal-btn-danger {
+    background: linear-gradient(120deg, #d32f2f, var(--accent-2));
+    color: #fff;
+    font-weight: 700;
+}
+
+.modal-btn-danger:hover:not(:disabled) {
+    opacity: 0.88;
+}
+
+/* Rules */
+.rules-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rules-label {
+    font-size: 0.72rem;
+    color: var(--faint);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+}
+
+/* Limit-to-top-N control */
+.limit-section {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.limit-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 0.87rem;
+    cursor: pointer;
+}
+
+.limit-label {
+    color: var(--muted);
+    font-size: 0.87rem;
+}
+
+.rule-input {
+    flex: 1;
+    padding: 7px 11px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-size: 0.83rem;
+    outline: none;
+    min-width: 0;
+}
+
+.rule-input-number {
+    width: 84px;
+    flex: unset;
+    text-align: center;
+}
+
+.rule-input:focus {
+    border-color: var(--purple);
+}
+
+.rule-input:disabled {
+    opacity: 0.5;
+}

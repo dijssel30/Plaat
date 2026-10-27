@@ -1,0 +1,190 @@
+.navbar-toggler {
+    appearance: none;
+    cursor: pointer;
+    width: 3.25rem;
+    height: 2.5rem;
+    color: white;
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    z-index: 10;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(22px);
+    background-image:
+        linear-gradient(white, white),
+        linear-gradient(white, white),
+        linear-gradient(white, white);
+    background-repeat: no-repeat;
+    background-size: 1.25rem 2px;
+    background-position:
+        center calc(50% - 6px),
+        center,
+        center calc(50% + 6px);
+}
+
+.navbar-toggler:checked {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 2px;
+}
+
+.nav-item ::deep .nav-link {
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-radius: 12px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    /* Bootstrap's .btn centres its content - the Sign out item is a <button>. */
+    justify-content: flex-start;
+    gap: 11px;
+    line-height: 1;
+    width: 100%;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.nav-item ::deep .nav-link .icon {
+    color: var(--faint);
+    width: 18px;
+    height: 18px;
+}
+
+.nav-item ::deep a.active {
+    background: var(--grad);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 8px 24px -10px var(--accent-2);
+}
+
+.nav-item ::deep a.active .icon {
+    color: #fff;
+}
+
+.nav-item ::deep .nav-link:hover:not(.active) {
+    background: var(--panel-2);
+    color: var(--text);
+}
+
+.nav-item ::deep .nav-link:hover:not(.active) .icon {
+    color: var(--text);
+}
+
+.nav-divider {
+    border-top: 1px solid var(--line);
+    margin: 10px 8px;
+}
+
+.playlists-header ::deep .nav-link {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: var(--faint);
+    height: 28px;
+}
+
+.playlists-header ::deep a.active {
+    background: none;
+    color: var(--accent);
+    box-shadow: none;
+}
+
+.playlist-nav-item {
+    border-radius: 12px;
+    transition: background-color 0.1s ease, box-shadow 0.1s ease;
+}
+
+.playlist-nav-item ::deep .nav-link {
+    height: 32px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.playlist-nav-item.drop-armed ::deep .nav-link {
+    outline: 1px dashed var(--accent-2);
+    outline-offset: -3px;
+}
+
+.playlist-nav-item.drop-target,
+.playlist-nav-item.drop-target ::deep .nav-link {
+    background: var(--grad);
+    color: #ffffff;
+}
+
+.nav-scrollable {
+    display: none;
+}
+
+.navbar-toggler:checked ~ .nav-scrollable {
+    display: block;
+}
+
+@media (max-width: 640.98px) {
+    .nav-scrollable {
+        /* Clear space so the toggler button doesn't sit on top of the first nav item. */
+        padding: 3rem 12px 12px 12px;
+        background: var(--panel);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border-bottom: 1px solid var(--line);
+    }
+}
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    /* The glass card itself: fills the inset .sidebar box from MainLayout. Sign out (see
+       .sign-out below) is a fixed-height sibling of .nav rather than part of it, so only .nav
+       itself scrolls - keeping the card as a whole non-scrolling means Sign out always has a
+       guaranteed, unshifting spot right under the list instead of somewhere within it. */
+    .nav-scrollable {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 18px 14px;
+        box-sizing: border-box;
+        background: var(--panel);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+    }
+
+    .nav-scrollable .nav {
+        /* 0 1 auto, not "flex: 1": the list is sized by its content and only shrinks (scrolling
+           inside itself) once it outgrows the card. Growing it instead would stretch it over all
+           the leftover space and strand Sign out at the very bottom of the card whenever the list
+           is shorter than the window - and, since the pinned playlists load asynchronously, move
+           it up to sit under the list the moment they arrive. */
+        flex: 0 1 auto;
+        min-height: 0;
+        /* Bootstrap's base .nav class sets flex-wrap: wrap (its .flex-column class only
+           overrides flex-direction, not this) - harmless while .nav had no height constraint,
+           but now that it does, content taller than the box wraps into a second column instead
+           of overflowing vertically, so e.g. "Admin" could land back at the top, shifted hidden
+           off to the right, rather than being reachable by scrolling down like everything else. */
+        flex-wrap: nowrap;
+        overflow-y: auto;
+        /* Without this, a long nav/playlist label makes the "visible" overflow-x compute to
+           "auto" too (per spec, mismatched overflow axes both become scrollable) - a spurious
+           horizontal scrollbar rather than the text just wrapping or clipping. */
+        overflow-x: hidden;
+    }
+
+    .nav-item.sign-out {
+        flex: none;
+        margin-top: 8px;
+    }
+}

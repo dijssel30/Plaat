@@ -1,0 +1,145 @@
+h3 {
+    margin: 0;
+}
+
+.stats-note {
+    margin: 0;
+    color: var(--muted);
+}
+
+/* Title on the left, both switches on the right; on a narrow window the switches
+   drop under the title and wrap between themselves rather than shrinking. */
+.stats-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-bottom: 20px;
+}
+
+.switches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* -------------------------------------------------------- library totals */
+
+.library-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    padding: 13px 15px;
+    font-size: 1.15rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat .label {
+    font-family: var(--font);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--faint);
+}
+
+/* --------------------------------------------------------------- panels */
+
+.panel {
+    background: var(--panel);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    padding: 18px 22px 20px;
+    margin-bottom: 22px;
+    min-width: 0;
+}
+
+/* Switching range or scope is a round trip. Rather than blanking the page, the
+   panels whose contents are about to change are dimmed until the answer lands. */
+.panel.busy {
+    opacity: 0.55;
+    transition: opacity 120ms ease;
+}
+
+/* The three breakdowns share the row rather than each keeping a fixed width, so
+   there is no dead space left of the page edge on a wide window. */
+.panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    align-items: start;
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+.panel-grid .panel {
+    margin-bottom: 0;
+}
+
+.panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-bottom: 18px;
+}
+
+.panel-head h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.panel-note {
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--faint);
+    white-space: nowrap;
+}
+
+.range-switch {
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+}
+
+.range-switch button {
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-ctl);
+    padding: 5px 13px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.range-switch button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text);
+}
+
+.range-switch button.active {
+    background: var(--grad);
+    color: #fff;
+}

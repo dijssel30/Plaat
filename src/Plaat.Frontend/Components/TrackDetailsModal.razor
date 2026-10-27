@@ -1,0 +1,139 @@
+  @using MudBlazor
+
+@if (TrackId is not null)
+{
+    <div class="modal-backdrop fade show" @onclick="Close"></div>
+
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Track Info</h5>
+                    <button class="btn-close" @onclick="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (_details is null)
+                    {
+                        <p>Loading...</p>
+                    }
+                    else
+                    {
+                        <h4 class="mb-0">@_details.Title</h4>
+                        <p class="text-muted">@_details.AllArtists &mdash; @_details.Album</p>
+
+                        <div class="track-info-stats">
+                            <div class="stat stat-rating">
+                                <span class="label">Rating</span>
+                                <StarRating Value="_rating"
+                                            Busy="_savingRating"
+                                            ValueChanged="SetRating"
+                                            Label="Your rating for this track"/>
+                            </div>
+                            <div class="stat"><span class="label">Duration</span><span>@FormatMinutesSeconds(_details.Duration)</span></div>
+                            <div class="stat"><span class="label">Bitrate</span><span>@_details.BitRate kbps</span></div>
+                            <div class="stat"><span class="label">Sample rate</span><span>@FormatSampleRate(_details.SampleRate)</span></div>
+                            <div class="stat"><span class="label">Bits per sample</span><span>@_details.BitsPerSample-bit</span></div>
+                            <div class="stat"><span class="label">Format</span><span>@(_details.Format ?? "Unknown")</span></div>
+                            <div class="stat"><span class="label">LUFS factor</span><span>@FormatLoudness(_details)</span></div>
+                            <div class="stat"><span class="label">MIME type</span><span>@_details.MimeType</span></div>
+                            <div class="stat"><span class="label">File size</span><span>@FormatFileSize(_details.FileSizeBytes)</span></div>
+                            <div class="stat"><span class="label">Added</span><span>@_details.AddedDate.ToString("d MMM yyyy")</span></div>
+                            <div class="stat"><span class="label">Play count</span><span>@_details.PlayCount</span></div>
+                            @if (_details.PossiblyCorrupt)
+                            {
+                                <div class="stat"><span class="label">Warning</span><span class="text-danger">Possibly corrupt file</span></div>
+                            }
+                        </div>
+                        <div class="stat mono-stat">
+                            <span class="label">File hash</span><span class="mono">@_details.FileHash</span>
+                        </div>
+
+                        <AuthorizeView Roles="Admin">
+                            <Authorized>
+                                <h6 class="mt-4">Playback trim (admin)</h6>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <label class="mb-0">Start</label>
+                                    <input class="form-control form-control-sm" style="width:6rem" @bind="_trimStartText" placeholder="mm:ss" disabled="@_savingTrim"/>
+                                    <label class="mb-0">End</label>
+                                    <input class="form-control form-control-sm" style="width:6rem" @bind="_trimEndText" placeholder="mm:ss" disabled="@_savingTrim"/>
+                                    <button class="btn btn-primary btn-sm" disabled="@_savingTrim" @onclick="SaveTrim">Save</button>
+                                    <button class="btn btn-outline-secondary btn-sm" disabled="@_savingTrim" @onclick="ClearTrim">Clear</button>
+                                </div>
+                                @if (_trimError is not null)
+                                {
+                                    <p class="text-danger small mt-1 mb-0">@_trimError</p>
+                                }
+                            </Authorized>
+                        </AuthorizeView>
+
+                        @if (!string.IsNullOrWhiteSpace(_details.Lyrics))
+                        {
+                            <h6 class="mt-4">Lyrics</h6>
+                            <pre class="track-lyrics">@_details.Lyrics</pre>
+                        }
+
+                        <h6 class="mt-4">Locations</h6>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Path</th>
+                                    <th>Supported</th>
+                                    <th>Default</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var location in _details.Locations)
+                                {
+                                    <tr>
+                                        <td class="mono">@location.Path</td>
+                                        <td>@(location.IsSupportedFormat ? "Yes" : "No")</td>
+                                        <td>@(location.IsDefault ? "Default" : "")</td>
+                                        <td>
+                                            @if (!location.IsDefault)
+                                            {
+                                                <button
+                                                    class="btn btn-secondary btn-sm"
+                                                    disabled="@(_settingDefaultLocationId == location.Id)"
+                                                    @onclick="() => SetDefault(location.Id)">
+                                                    Set as default
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <h6 class="mb-0">Play history</h6>
+                            <select class="form-control w-auto" @bind="_range" @bind:after="RebuildChart">
+                                <option value="@PlayHistoryRange.Day">Last day</option>
+                                <option value="@PlayHistoryRange.Month">Last month</option>
+                                <option value="@PlayHistoryRange.Year">Last year</option>
+                                <option value="@PlayHistoryRange.All">All time</option>
+                            </select>
+                        </div>
+
+                        @if (_details.PlayHistory.Count == 0)
+                        {
+                            <p class="text-muted mt-2">No plays recorded yet.</p>
+                        }
+                        else
+                        {
+                            <div class="mt-2">
+                                <MudChart ChartType="ChartType.Bar" ChartSeries="_series" ChartLabels="_labels"
+                                          ChartOptions="@ChartPalettes.Bar()" Width="100%" Height="250px"/>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

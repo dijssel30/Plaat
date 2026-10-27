@@ -1,0 +1,170 @@
+@namespace Plaat.Frontend.Components.Playlists
+@using Plaat.Contract.Models
+
+<div class="rule-group @(Depth > 0 ? "rule-group-nested" : "")">
+    <div class="rule-group-header">
+        <div class="combinator-toggle">
+            <button type="button"
+                    class="combinator-btn @(Group.Combinator == SmartPlaylistGroupCombinator.And ? "active" : "")"
+                    @onclick="ToggleCombinator">
+                AND
+            </button>
+            <button type="button"
+                    class="combinator-btn @(Group.Combinator == SmartPlaylistGroupCombinator.Or ? "active" : "")"
+                    @onclick="ToggleCombinator">
+                OR
+            </button>
+        </div>
+
+        <div class="rule-group-actions">
+            <button type="button" class="add-rule-btn" @onclick="AddRule">+ Rule</button>
+            @if (CanAddChildGroup)
+            {
+                <button type="button" class="add-rule-btn" @onclick="AddChildGroup">+ Group</button>
+            }
+            @if (CanRemoveSelf)
+            {
+                <button type="button" class="remove-rule-btn" title="Remove group" @onclick="() => OnRemoveSelf.InvokeAsync()">
+                    <span class="icon icon-close"></span>
+                </button>
+            }
+        </div>
+    </div>
+
+    @foreach (var rule in Group.Rules)
+    {
+        <div class="rule-row">
+            <select class="rule-select" value="@rule.Type" @onchange="e => OnRuleTypeChanged(rule, e)">
+                <option value="PlayCount">Play Count</option>
+                <option value="Title">Title</option>
+                <option value="ArtistName">Artist Name</option>
+                <option value="AlbumName">Album Name</option>
+                <option value="Genre">Genre</option>
+                <option value="AddedDate">Added Date</option>
+                <option value="AddedWithinDays">Added Within Days</option>
+                <option value="NotPlayedInDays">Not Played In Days</option>
+                <option value="DurationRange">Duration Range</option>
+                <option value="Year">Year</option>
+                <option value="Bitrate">Bitrate</option>
+                <option value="Stars">Stars</option>
+            </select>
+
+            @if (rule.Type == SmartRuleType.PlayCount)
+            {
+                <select class="rule-select rule-select-op" value="@rule.PlayCountType" @onchange="e => OnPlayCountTypeChanged(rule, e)">
+                    <option value="HigherThan">higher than</option>
+                    <option value="HigherOrEqual">≥</option>
+                    <option value="LowerThan">lower than</option>
+                    <option value="LowerOrEqual">≤</option>
+                </select>
+                <input class="rule-input rule-input-number"
+                       type="number" min="0"
+                       value="@rule.PlayCountValue"
+                       @onchange="e => OnPlayCountValueChanged(rule, e)"/>
+            }
+            else if (rule.Type == SmartRuleType.AddedDate)
+            {
+                <select class="rule-select rule-select-op" value="@rule.DateRuleType" @onchange="e => OnDateRuleTypeChanged(rule, e)">
+                    <option value="HigherOrEqual">on or after</option>
+                    <option value="HigherThan">after</option>
+                    <option value="LowerOrEqual">on or before</option>
+                    <option value="LowerThan">before</option>
+                </select>
+                <input class="rule-input"
+                       type="date"
+                       value="@rule.DateValue.ToString("yyyy-MM-dd")"
+                       @onchange="e => OnDateValueChanged(rule, e)"/>
+            }
+            else if (rule.Type is SmartRuleType.AddedWithinDays or SmartRuleType.NotPlayedInDays)
+            {
+                <span class="rule-static-label">in the last</span>
+                <input class="rule-input rule-input-number"
+                       type="number" min="1"
+                       value="@rule.DaysValue"
+                       @onchange="e => OnDaysValueChanged(rule, e)"/>
+                <span class="rule-static-label">days</span>
+            }
+            else if (rule.Type == SmartRuleType.DurationRange)
+            {
+                <span class="rule-static-label">min</span>
+                <input class="rule-input rule-input-number"
+                       type="number" min="0" step="0.5"
+                       value="@FormatMinutes(rule.MinDuration)"
+                       @onchange="e => OnMinDurationChanged(rule, e)"/>
+                <span class="rule-static-label">max</span>
+                <input class="rule-input rule-input-number"
+                       type="number" min="0" step="0.5"
+                       value="@FormatMinutes(rule.MaxDuration)"
+                       @onchange="e => OnMaxDurationChanged(rule, e)"/>
+                <span class="rule-static-label">minutes</span>
+            }
+            else if (rule.Type == SmartRuleType.Year)
+            {
+                <select class="rule-select rule-select-op" value="@rule.YearRuleType" @onchange="e => OnYearRuleTypeChanged(rule, e)">
+                    <option value="HigherThan">after</option>
+                    <option value="HigherOrEqual">on or after</option>
+                    <option value="LowerThan">before</option>
+                    <option value="LowerOrEqual">on or before</option>
+                </select>
+                <input class="rule-input rule-input-number"
+                       type="number" min="0"
+                       value="@rule.YearValue"
+                       @onchange="e => OnYearValueChanged(rule, e)"/>
+            }
+            else if (rule.Type == SmartRuleType.Bitrate)
+            {
+                <select class="rule-select rule-select-op" value="@rule.BitrateRuleType" @onchange="e => OnBitrateRuleTypeChanged(rule, e)">
+                    <option value="HigherThan">higher than</option>
+                    <option value="HigherOrEqual">≥</option>
+                    <option value="LowerThan">lower than</option>
+                    <option value="LowerOrEqual">≤</option>
+                </select>
+                <input class="rule-input rule-input-number"
+                       type="number" min="0"
+                       value="@rule.BitrateValue"
+                       @onchange="e => OnBitrateValueChanged(rule, e)"/>
+                <span class="rule-static-label">kbps</span>
+            }
+            else if (rule.Type == SmartRuleType.Stars)
+            {
+                <select class="rule-select rule-select-op" value="@rule.StarsRuleType" @onchange="e => OnStarsRuleTypeChanged(rule, e)">
+                    <option value="Equals">exactly</option>
+                    <option value="HigherThan">more than</option>
+                    <option value="HigherOrEqual">≥</option>
+                    <option value="LowerThan">fewer than</option>
+                    <option value="LowerOrEqual">≤</option>
+                </select>
+                <select class="rule-select rule-select-op" value="@rule.StarsValue" @onchange="e => OnStarsValueChanged(rule, e)">
+                    @for (var stars = TrackRatingDto.MinStars; stars <= TrackRatingDto.MaxStars; stars++)
+                    {
+                        <option value="@stars">@stars</option>
+                    }
+                </select>
+                <span class="rule-static-label">stars</span>
+            }
+            else
+            {
+                <select class="rule-select rule-select-op" value="@rule.TextMatchType" @onchange="e => OnTextMatchTypeChanged(rule, e)">
+                    <option value="Contains">contains</option>
+                    <option value="StartsWith">starts with</option>
+                    <option value="EndsWith">ends with</option>
+                    <option value="Equals">equals</option>
+                </select>
+                <input class="rule-input"
+                       type="text"
+                       placeholder="value"
+                       value="@rule.TextValue"
+                       @oninput="e => OnTextValueChanged(rule, e)"/>
+            }
+
+            <button type="button" class="remove-rule-btn" title="Remove rule" @onclick="() => RemoveRule(rule)">
+                <span class="icon icon-close"></span>
+            </button>
+        </div>
+    }
+
+    @foreach (var child in Group.ChildGroups)
+    {
+        <SmartRuleGroupEditor Group="child" Depth="Depth + 1" CanRemoveSelf="true" OnRemoveSelf="() => RemoveChildGroup(child)"/>
+    }
+</div>

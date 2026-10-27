@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--
+        "Aurora" theme, dark only (App forces AppTheme.Dark, so every
+        AppThemeBinding in Styles.xaml resolves to its Dark branch). The stock
+        template key names are kept and remapped onto the theme's ramp so the
+        generated control styles land on the right colours; the Aurora-specific
+        keys below are the ones pages should use directly.
+        Note: For Android see also Platforms\Android\Resources\values\colors.xml
+    -->
+
+    <!-- Accents - the same three the web UI uses. -->
+    <Color x:Key="Accent">#ff6a00</Color>
+    <Color x:Key="AccentAlt">#ff3d7f</Color>
+    <Color x:Key="AccentPurple">#7f00ff</Color>
+
+    <!-- Surfaces. -->
+    <Color x:Key="Bg">#08070b</Color>
+    <Color x:Key="BgBar">#0d0b11</Color>
+    <Color x:Key="Surface">#16141b</Color>
+    <Color x:Key="SurfaceAlt">#1d1a24</Color>
+    <Color x:Key="Line">#2b2833</Color>
+    <Color x:Key="TextPrimary">#ffffff</Color>
+    <Color x:Key="TextMuted">#9d99a8</Color>
+    <Color x:Key="TextFaint">#6f6c7a</Color>
+    <Color x:Key="Danger">#ff5577</Color>
+
+    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#ff6a00" Offset="0.0" />
+        <GradientStop Color="#ff3d7f" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SmartGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#7f00ff" Offset="0.0" />
+        <GradientStop Color="#ff3d7f" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <!-- Template keys, remapped onto the theme. -->
+    <Color x:Key="Primary">#ff6a00</Color>
+    <Color x:Key="PrimaryDark">#ff6a00</Color>
+    <Color x:Key="PrimaryDarkText">#ffffff</Color>
+    <Color x:Key="Secondary">#ff3d7f</Color>
+    <Color x:Key="SecondaryDarkText">#ffffff</Color>
+    <Color x:Key="Tertiary">#7f00ff</Color>
+
+    <Color x:Key="White">#ffffff</Color>
+    <Color x:Key="Black">#08070b</Color>
+    <Color x:Key="Magenta">#ff3d7f</Color>
+    <Color x:Key="MidnightBlue">#140b27</Color>
+    <Color x:Key="OffBlack">#0d0b11</Color>
+
+    <Color x:Key="Gray100">#eceaf1</Color>
+    <Color x:Key="Gray200">#cfccd6</Color>
+    <Color x:Key="Gray300">#a6a3b0</Color>
+    <Color x:Key="Gray400">#8b8896</Color>
+    <Color x:Key="Gray500">#6f6c7a</Color>
+    <Color x:Key="Gray600">#2b2833</Color>
+    <Color x:Key="Gray900">#16141b</Color>
+    <Color x:Key="Gray950">#0d0b11</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
+
+    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
+    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
+    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
+    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}"/>
+    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
+    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
+    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
+    <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+</ResourceDictionary>

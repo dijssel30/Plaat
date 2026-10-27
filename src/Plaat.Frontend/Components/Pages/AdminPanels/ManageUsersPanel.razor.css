@@ -1,0 +1,19 @@
+.admin-section {
+    max-width: 900px;
+    margin-bottom: 2rem;
+}
+
+.admin-section table {
+    margin-bottom: 1.5rem;
+}
+
+.settings-card {
+    max-width: 520px;
+    margin-bottom: 2rem;
+    background: var(--panel);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    padding: 22px 24px;
+}

@@ -1,0 +1,201 @@
+/* Hero band, matching the album page. */
+.artist-header {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+    padding: 26px;
+    margin-bottom: 26px;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.artist-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(115deg, rgba(255, 106, 0, 0.22), rgba(127, 0, 255, 0.18) 60%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    pointer-events: none;
+}
+
+.artist-header-image {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 999px;
+    flex: 0 0 180px;
+    align-self: flex-start;
+    box-shadow: 0 30px 60px -25px #000;
+}
+
+.artist-header-image-pending {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.artist-header-summary {
+    position: relative;
+    min-width: 0;
+}
+
+.artist-header-summary h2 {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0 0 10px 0;
+}
+
+.artist-action-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 4px 0 10px 0;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    padding: 0 18px;
+    height: 38px;
+    font-size: 0.87rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.action-btn:hover {
+    background: var(--panel-2);
+}
+
+.action-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.artist-summary {
+    white-space: pre-line;
+    color: var(--muted);
+    max-width: 680px;
+    line-height: 1.55;
+}
+
+.artist-summary-collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.artist-summary-toggle {
+    margin-top: 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.artist-summary-toggle:hover {
+    background: none;
+    text-decoration: underline;
+}
+
+@media (max-width: 640.98px) {
+    .artist-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px 16px;
+    }
+
+    .artist-header-image {
+        width: 150px;
+        height: 150px;
+        flex-basis: 150px;
+        align-self: center;
+    }
+
+    .artist-header-summary h2 {
+        font-size: 1.6rem;
+    }
+}
+
+.albums-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    margin-bottom: 14px;
+}
+
+.albums-scroll {
+    display: flex;
+    gap: 20px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 6px;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+}
+
+.album-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 180px;
+}
+
+.album-card img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-art);
+}
+
+.album-card span {
+    text-align: left;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--muted);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.album-card:hover span {
+    color: var(--text);
+}
+
+@media (max-width: 640.98px) {
+    .album-card {
+        flex: 0 0 140px;
+    }
+
+    .album-card img {
+        width: 140px;
+        height: 140px;
+    }
+}

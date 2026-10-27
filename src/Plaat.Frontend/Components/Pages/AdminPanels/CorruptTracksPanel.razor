@@ -1,0 +1,42 @@
+<div class="admin-section">
+    @if (_message is not null)
+    {
+        <div class="alert alert-danger">@_message</div>
+    }
+
+    <button class="btn btn-primary mb-2" @onclick="Refresh" disabled="@_isLoading">
+        @(_isLoading ? "Refreshing..." : "Refresh")
+    </button>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>File path(s)</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var track in _tracks)
+        {
+            <tr>
+                <td>@track.Title</td>
+                <td>@track.AllArtists</td>
+                <td><a href="@Redirects.GetAlbumHref(track.AlbumId)">@track.Album</a></td>
+                <td>
+                    @foreach (var path in track.Paths)
+                    {
+                        <div class="mono">@path</div>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    @if (_tracks.Count == 0 && !_isLoading)
+    {
+        <p>No possibly corrupt tracks found.</p>
+    }
+</div>

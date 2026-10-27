@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Plaat.Contract;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.TrackActions.TrackDetailsPage"
+             x:DataType="vm:TrackDetailsViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="6">
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+            <Label Text="Loading..." IsVisible="{Binding IsBusy}" />
+
+            <VerticalStackLayout Spacing="6" IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+                <Label Text="{Binding Details.Title}" FontSize="22" FontFamily="SoraBold" LineBreakMode="TailTruncation" />
+                <Label Text="{Binding Details.AllArtists}" FontSize="15" TextColor="{StaticResource TextMuted}" LineBreakMode="TailTruncation" />
+                <Label Text="{Binding Details.Album}" FontSize="13" Opacity="0.5" LineBreakMode="TailTruncation" Margin="0,0,0,10" />
+
+                <Label Text="{Binding DurationText, StringFormat='Duration: {0}'}" FontSize="14" />
+                <Label Text="{Binding Details.BitRate, StringFormat='Bitrate: {0} kbps'}" FontSize="14" />
+                <Label Text="{Binding SampleRateText, StringFormat='Sample rate: {0}'}" FontSize="14" />
+                <Label Text="{Binding Details.BitsPerSample, StringFormat='Bits per sample: {0}-bit'}" FontSize="14" />
+                <Label Text="{Binding Details.Format, StringFormat='Format: {0}'}" FontSize="14" />
+                <Label Text="{Binding LufsText, StringFormat='LUFS factor: {0}'}" FontSize="14" />
+                <Label Text="{Binding Details.MimeType, StringFormat='MIME type: {0}'}" FontSize="14" />
+                <Label Text="{Binding FileSizeText, StringFormat='File size: {0}'}" FontSize="14" />
+                <Label Text="{Binding Details.AddedDate, StringFormat='Added: {0:d MMM yyyy}'}" FontSize="14" />
+                <Label Text="{Binding Details.PlayCount, StringFormat='Play count: {0}'}" FontSize="14" />
+                <Label Text="Possibly corrupt file" TextColor="Red" FontSize="14" IsVisible="{Binding Details.PossiblyCorrupt}" />
+
+                <Label Text="{Binding Details.FileHash, StringFormat='Hash: {0}'}" FontSize="11" Opacity="0.5" Margin="0,10,0,0" LineBreakMode="TailTruncation" />
+
+                <Label Text="Locations" Style="{StaticResource SectionHeader}" Margin="0,20,0,4" />
+                <CollectionView ItemsSource="{Binding Locations}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TrackLocationDto">
+                            <Grid Padding="0,10" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Path}" FontSize="13" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding IsSupportedFormat, Converter={StaticResource SupportedFormatLabelConverter}}"
+                                       FontSize="11" TextColor="{StaticResource TextFaint}" />
+                                <Label Grid.Row="2" Grid.Column="0" Text="Default location" FontSize="11"
+                                       TextColor="{StaticResource Primary}" IsVisible="{Binding IsDefault}" />
+                                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Text="Set as default"
+                                        IsVisible="{Binding IsDefault, Converter={StaticResource InvertedBoolConverter}}"
+                                        FontSize="12" Padding="10,4"
+                                        Clicked="OnSetDefaultClicked" CommandParameter="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

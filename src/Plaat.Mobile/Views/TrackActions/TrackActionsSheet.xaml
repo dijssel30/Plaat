@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Deezer-style bottom sheet for per-track actions (add to playlist, remove from playlist, add to
+    queue, play next, go to album/artist, track details). Self-contained: resolves PlayerQueueService/IPlaatClient via
+    ServiceHelper itself (the same pattern MiniPlayerBar uses) instead of requiring each host page to
+    wire up five separate event handlers, so embedding it is just dropping <trackActions:TrackActionsSheet
+    x:Name="ActionsSheet" .../> as the last (topmost) child of the page's root Grid and calling
+    ActionsSheet.ShowAsync(track, playlistId) from a long-press handler.
+-->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:trackActions="clr-namespace:Plaat.Mobile.Views.TrackActions"
+             x:Class="Plaat.Mobile.Views.TrackActions.TrackActionsSheet"
+             x:Name="Root"
+             IsVisible="False"
+             InputTransparent="False">
+
+    <Grid>
+        <BoxView x:Name="Backdrop" BackgroundColor="Black" Opacity="0">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackdropTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <Border x:Name="Sheet" VerticalOptions="End" BackgroundColor="{StaticResource SurfaceAlt}" StrokeThickness="0" Padding="0,8,0,24">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="22,22,0,0" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout>
+                <BoxView WidthRequest="36" HeightRequest="4" CornerRadius="2"
+                         BackgroundColor="{StaticResource Line}" HorizontalOptions="Center" Margin="0,4,0,12" />
+
+                <Label x:Name="TrackTitleLabel" TextColor="{StaticResource TextPrimary}" FontFamily="DMSansBold" FontSize="16"
+                       Margin="20,0,20,2" LineBreakMode="TailTruncation" />
+                <Label x:Name="TrackArtistLabel" TextColor="{StaticResource TextMuted}" FontSize="13"
+                       Margin="20,0,20,10" LineBreakMode="TailTruncation" />
+
+                <CollectionView x:Name="ActionsList" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="trackActions:SheetActionItem">
+                            <Grid Padding="20,14">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnActionTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Label Text="{Binding Label}" TextColor="{StaticResource TextPrimary}" FontSize="16" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentView>

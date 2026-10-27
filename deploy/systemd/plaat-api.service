@@ -1,0 +1,18 @@
+[Unit]
+Description=Plaat API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=<insert username>
+Group=<insert username>
+WorkingDirectory=~/plaat/api
+ExecStart=~/plaat/api/Plaat.Api
+Restart=on-failure
+RestartSec=5
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5014
+
+[Install]
+WantedBy=multi-user.target

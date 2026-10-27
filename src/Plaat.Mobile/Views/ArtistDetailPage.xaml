@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:player="clr-namespace:Plaat.Mobile.Views.Player"
+             xmlns:trackActions="clr-namespace:Plaat.Mobile.Views.TrackActions"
+             xmlns:contract="clr-namespace:Plaat.Contract;assembly=Plaat.Contract"
+             xmlns:models="clr-namespace:Plaat.Contract.Models;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.ArtistDetailPage"
+             x:DataType="vm:ArtistDetailViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="*,Auto">
+        <CollectionView Grid.Row="0" ItemsSource="{Binding Tracks}">
+            <CollectionView.Header>
+                <VerticalStackLayout Padding="16" Spacing="12">
+                    <Border Style="{StaticResource ArtLarge}" HorizontalOptions="Center"
+                            IsVisible="{Binding ArtistImageUrl, Converter={StaticResource StringToBoolConverter}}">
+                        <Image Source="{Binding ArtistImageUrl}"
+                               HeightRequest="170" WidthRequest="170" Aspect="AspectFill" />
+                    </Border>
+
+                    <Label Text="{Binding Artist.Name}" FontSize="24" FontFamily="SoraBold" />
+
+                    <Button Text="{Binding IsFavorite, Converter={StaticResource FavoriteLabelConverter}}"
+                            Command="{Binding ToggleFavoriteCommand}" Style="{StaticResource PillGhost}"
+                            HorizontalOptions="Start" />
+
+                    <Label Text="{Binding BioText}" FontSize="13" TextColor="{StaticResource TextMuted}"
+                           IsVisible="{Binding BioText, Converter={StaticResource StringToBoolConverter}}"
+                           MaxLines="6" LineBreakMode="TailTruncation" />
+
+                    <Label Text="Popular Tracks" Style="{StaticResource SectionHeader}"
+                           IsVisible="{Binding PopularTracks.Count, Converter={StaticResource IntGreaterThanZeroConverter}}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DisplayedPopularTracks}"
+                                         IsVisible="{Binding PopularTracks.Count, Converter={StaticResource IntGreaterThanZeroConverter}}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="contract:TrackDto">
+                                <Grid x:Name="PopularTrackRow" Padding="0,8">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnPopularTrackTapped" CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <Grid.Behaviors>
+                                        <behaviors:TouchBehavior LongPressCompleted="OnTrackLongPressed"
+                                                                  LongPressCommandParameter="{Binding Source={x:Reference PopularTrackRow}, Path=BindingContext}" />
+                                    </Grid.Behaviors>
+                                    <VerticalStackLayout Spacing="0">
+                                        <Label Text="{Binding Title}" />
+                                        <Label Text="{Binding Album}" FontSize="12" TextColor="{StaticResource TextMuted}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Button Text="{Binding IsPopularTracksExpanded, Converter={StaticResource ExpandToggleLabelConverter}}"
+                            Command="{Binding ToggleExpandPopularTracksCommand}"
+                            Style="{StaticResource LinkButton}"
+                            HorizontalOptions="Start"
+                            IsVisible="{Binding HasMorePopularTracks}" />
+
+                    <Label Text="Albums" Style="{StaticResource SectionHeader}" IsVisible="{Binding Albums.Count, Converter={StaticResource IntGreaterThanZeroConverter}}" />
+                    <CollectionView ItemsSource="{Binding Albums}" HeightRequest="120"
+                                    ItemsLayout="HorizontalList"
+                                    IsVisible="{Binding Albums.Count, Converter={StaticResource IntGreaterThanZeroConverter}}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:AlbumOnlyDto">
+                                <Grid Padding="0,0,10,0" WidthRequest="90">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAlbumTapped" CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="6">
+                                        <Border Style="{StaticResource Art}">
+                                            <Image Source="{Binding Id, Converter={StaticResource AlbumCoverConverter}}"
+                                                   WidthRequest="90" HeightRequest="90" Aspect="AspectFill" />
+                                        </Border>
+                                        <Label Text="{Binding Title}" FontSize="11" TextColor="{StaticResource TextMuted}"
+                                               LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <Label Text="Tracks" Style="{StaticResource SectionHeader}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="contract:TrackDto">
+                    <Grid x:Name="TrackRow" Padding="16,8">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTrackTapped" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        <Grid.Behaviors>
+                            <behaviors:TouchBehavior LongPressCompleted="OnTrackLongPressed"
+                                                      LongPressCommandParameter="{Binding Source={x:Reference TrackRow}, Path=BindingContext}" />
+                        </Grid.Behaviors>
+                        <VerticalStackLayout Spacing="0">
+                            <Label Text="{Binding Title}" />
+                            <Label Text="{Binding Album}" FontSize="12" TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <player:MiniPlayerBar Grid.Row="1" />
+
+        <trackActions:TrackActionsSheet x:Name="ActionsSheet" Grid.Row="0" Grid.RowSpan="2" />
+    </Grid>
+</ContentPage>

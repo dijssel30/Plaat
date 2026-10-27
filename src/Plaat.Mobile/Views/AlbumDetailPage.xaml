@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:player="clr-namespace:Plaat.Mobile.Views.Player"
+             xmlns:trackActions="clr-namespace:Plaat.Mobile.Views.TrackActions"
+             xmlns:contract="clr-namespace:Plaat.Contract;assembly=Plaat.Contract"
+             xmlns:vm="clr-namespace:Plaat.Mobile.ViewModels"
+             x:Class="Plaat.Mobile.Views.AlbumDetailPage"
+             x:DataType="vm:AlbumDetailViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Single scrollable root: CollectionView.Header holds the non-list album info/actions,
+             rather than nesting a CollectionView inside a ScrollView (which needs a fragile fixed
+             height to avoid collapsing, since CollectionView normally owns its own scrolling). -->
+        <CollectionView Grid.Row="0" ItemsSource="{Binding TrackGroups}" IsGrouped="True">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="vm:TrackDiscGroup">
+                    <!-- Empty name = single-disc album. Hiding the label isn't enough - the group
+                         header cell keeps its measured height - so the cell is zeroed explicitly. -->
+                    <Grid HeightRequest="{Binding Name, Converter={StaticResource EmptyStringToZeroHeightConverter}}">
+                        <Label Text="{Binding Name}" Style="{StaticResource SectionHeader}" Padding="16,14,16,2"
+                               IsVisible="{Binding Name, Converter={StaticResource StringToBoolConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.Header>
+                <VerticalStackLayout Padding="16" Spacing="12">
+                    <Border Style="{StaticResource ArtLarge}" HorizontalOptions="Center">
+                        <Image Source="{Binding AlbumId, Converter={StaticResource AlbumCoverConverter}}"
+                               HeightRequest="210" WidthRequest="210" Aspect="AspectFill" />
+                    </Border>
+
+                    <Label Text="{Binding Album.Title}" FontSize="24" FontFamily="SoraBold" />
+                    <Label Text="{Binding Album.AllArtists}" FontSize="16" TextColor="{StaticResource TextMuted}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnArtistTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="{Binding YearLabel}" FontSize="13" TextColor="{StaticResource TextFaint}"
+                           IsVisible="{Binding YearLabel, Converter={StaticResource StringToBoolConverter}}" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <Button Text="Play" Command="{Binding PlayCommand}" Style="{StaticResource PillPrimary}" />
+                        <Button Text="Shuffle" Command="{Binding ShuffleCommand}" Style="{StaticResource PillGhost}" />
+                        <Button Text="{Binding IsFavorite, Converter={StaticResource FavoriteLabelConverter}}"
+                                Command="{Binding ToggleFavoriteCommand}" Style="{StaticResource PillGhost}" />
+                    </HorizontalStackLayout>
+
+                    <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Danger}" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="contract:TrackDto">
+                    <Grid x:Name="TrackRow" Padding="16,8" ColumnDefinitions="30,*">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTrackTapped" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        <Grid.Behaviors>
+                            <behaviors:TouchBehavior LongPressCompleted="OnTrackLongPressed"
+                                                      LongPressCommandParameter="{Binding Source={x:Reference TrackRow}, Path=BindingContext}" />
+                        </Grid.Behaviors>
+                        <Label Grid.Column="0" Text="{Binding TrackNumber}" TextColor="{StaticResource TextFaint}" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="{Binding Title}" />
+                            <Label Text="{Binding AllArtists}" FontSize="12" TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <player:MiniPlayerBar Grid.Row="1" />
+
+        <trackActions:TrackActionsSheet x:Name="ActionsSheet" Grid.Row="0" Grid.RowSpan="2" />
+    </Grid>
+</ContentPage>

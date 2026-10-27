@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Plaat.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:Plaat.Mobile.Views"
+    FlyoutBehavior="Disabled"
+    Title="Plaat">
+
+    <!--
+        First-declared ShellContent, so it's what Shell renders on launch, before AppShell.xaml.cs's
+        OnLoaded has had a chance to check auth state (that check is async - it restores/refreshes
+        the token over HTTP - so nothing here can decide login-vs-home synchronously). Without this,
+        the login screen itself was the first-declared item and would flash for already-logged-in
+        users until the async check redirected away from it.
+    -->
+    <ShellContent Route="startup" ContentTemplate="{DataTemplate views:StartupPage}" Shell.FlyoutItemIsVisible="False" />
+
+    <!--
+        Declared as a real top-level ShellContent (not just a Routing.RegisterRoute) because
+        AppShell navigates here with an absolute route (GoToAsync("//login")) before the user is
+        authenticated - Shell only allows absolute ("//") navigation to routes that are actually
+        part of its visual hierarchy, not to bare code-registered "global routes".
+    -->
+    <ShellContent Route="login" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutItemIsVisible="False" />
+
+    <TabBar>
+        <ShellContent Title="Home" Route="home" ContentTemplate="{DataTemplate views:HomePage}" />
+        <ShellContent Title="Artists" Route="artists" ContentTemplate="{DataTemplate views:ArtistsPage}" />
+        <ShellContent Title="Albums" Route="albums" ContentTemplate="{DataTemplate views:AlbumsPage}" />
+        <ShellContent Title="Playlists" Route="playlists" ContentTemplate="{DataTemplate views:PlaylistsPage}" />
+        <ShellContent Title="Other" Route="other" ContentTemplate="{DataTemplate views:OtherPage}" />
+    </TabBar>
+
+</Shell>

@@ -1,0 +1,12 @@
+<div class="seekbar"
+     @onpointerdown="OnPointerDown"
+     @onpointermove="OnPointerMove"
+     @onpointerup="OnPointerUp"
+     @onpointerleave="OnPointerUp">
+
+    <div class="seekbar-track" 
+         @ref="_barRef">
+        <div class="seekbar-progress" style="width: @(GetProgressPercent())%"></div>
+        <div class="seekbar-thumb" style="left: @(GetProgressPercent())%"></div>
+    </div>
+</div>

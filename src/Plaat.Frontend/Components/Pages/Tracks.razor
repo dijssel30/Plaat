@@ -1,0 +1,59 @@
+@page "/tracks"
+@using Plaat.Contract.Models
+
+<PageTitle>Tracks</PageTitle>
+
+<h3>Tracks@(_totalCount is { } total ? $" ({total:N0})" : "")</h3>
+
+<div class="search-bar">
+    <input class="search-input"
+           placeholder="Search tracks..."
+           @bind="Search"
+           @bind:event="oninput"/>
+</div>
+
+<div class="track-table">
+    <div class="track-table-header">
+        <div class="sortable title" @onclick="() => SetSort(TrackSortField.Title)">Title <span class="sort-indicator">@Indicator(TrackSortField.Title)</span></div>
+        <div class="sortable artists" @onclick="() => SetSort(TrackSortField.Artist)">Artist(s) <span class="sort-indicator">@Indicator(TrackSortField.Artist)</span></div>
+        <div class="sortable album" @onclick="() => SetSort(TrackSortField.Album)">Album <span class="sort-indicator">@Indicator(TrackSortField.Album)</span></div>
+        <div class="sortable year" @onclick="() => SetSort(TrackSortField.Year)">Year <span class="sort-indicator">@Indicator(TrackSortField.Year)</span></div>
+        <div class="sortable right" @onclick="() => SetSort(TrackSortField.Plays)">Plays <span class="sort-indicator">@Indicator(TrackSortField.Plays)</span></div>
+    </div>
+    <div class="track-table-body">
+        <Virtualize @ref="_virtualize" ItemsProvider="LoadTracks" Context="track" ItemSize="37">
+            <ItemContent>
+                <div class="track-table-row @(track.Id == _currentPlayingId ? "active" : "")"
+                     @key="track.Id"
+                     @onclick="() => PlayFrom(track)">
+                    <div class="cell title">@track.Title</div>
+                    <div class="cell artists">
+                        @foreach (var artist in track.Artists.Index())
+                        {
+                            <a href="@Redirects.GetArtistHref(artist.Item.Id)" @onclick:stopPropagation>
+                                <span class="a-link">@artist.Item.Name</span>
+                            </a>
+                            @if (artist.Index != track.Artists.Count - 1)
+                            {
+                                <span>, </span>
+                            }
+                        }
+                    </div>
+                    <div class="cell album">
+                        <a href="@Redirects.GetAlbumHref(track.AlbumId)" @onclick:stopPropagation><span class="a-link">@track.Album</span></a>
+                    </div>
+                    <div class="cell year">@(track.RecordedDate?.ToString("yyyy-MM-dd") ?? track.Year.ToString())</div>
+                    <div class="cell right">@track.PlayCount</div>
+                </div>
+            </ItemContent>
+            <Placeholder>
+                <div class="track-table-row placeholder"><div class="cell">Loading…</div></div>
+            </Placeholder>
+        </Virtualize>
+    </div>
+</div>
+
+@if (_queueCapped)
+{
+    <p class="queue-note">Playing the first @MaxQueueTracks tracks from this view.</p>
+}

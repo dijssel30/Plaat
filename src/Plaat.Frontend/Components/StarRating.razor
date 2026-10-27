@@ -1,0 +1,25 @@
+@using Plaat.Contract.Models
+
+<div class="star-rating"
+     @ref="_rootRef"
+     role="group"
+     aria-label="@Label"
+     @onpointermove="OnPointerMove"
+     @onpointerup="OnPointerUp"
+     @onpointercancel="OnPointerCancel">
+    @for (var star = TrackRatingDto.MinStars + 1; star <= TrackRatingDto.MaxStars; star++)
+    {
+        var value = star;
+
+        <button type="button"
+                class="star @(value <= Display ? "star-filled" : "")"
+                disabled="@Busy"
+                title="@StarTitle(value)"
+                aria-label="@StarTitle(value)"
+                aria-pressed="@(value <= Value)"
+                @onpointerdown="e => OnStarPointerDown(value, e)"
+                @onclick="e => OnStarClick(value, e)">
+            <span class="icon @(value <= Display ? "icon-star" : "icon-star-outline")"></span>
+        </button>
+    }
+</div>

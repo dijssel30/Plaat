@@ -1,0 +1,19 @@
+<Solution>
+  <Project Path="src/Plaat.Contract/Plaat.Contract.csproj" />
+  <Project Path="src/Plaat.Db/Plaat.Db.csproj" />
+  <Project Path="src/Plaat.Infrastructure/Plaat.Infrastructure.csproj" />
+  <Project Path="test/Plaat.Infrastructure.Tests/Plaat.Infrastructure.Tests.csproj" />
+  <Project Path="src/Plaat.Api/Plaat.Api.csproj" />
+  <Project Path="src/Plaat.Frontend/Plaat.Frontend.csproj" />
+  <Project Path="src/Plaat.Mobile/Plaat.Mobile.csproj" />
+  <Project Path="test/Plaat.Mobile.Tests/Plaat.Mobile.Tests.csproj" />
+  <Project Path="test/Plaat.Biz.Tests/Plaat.Biz.Tests.csproj" />
+  <Project Path="src/Plaat.Biz/Plaat.Biz.csproj" />
+  <Project Path="test/Plaat.Contract.Tests/Plaat.Contract.Tests.csproj" />
+  <Project Path="test/Plaat.Db.Tests/Plaat.Db.Tests.csproj" />
+  <Project Path="test/Plaat.Api.Tests/Plaat.Api.Tests.csproj" />
+  <Project Path="test/Plaat.Frontend.Tests/Plaat.Frontend.Tests.csproj" />
+  <Project Path="test/Plaat.TestSupport/Plaat.TestSupport.csproj" />
+  <Project Path="test/Plaat.Frontend.E2E.Tests/Plaat.Frontend.E2E.Tests.csproj" />
+  <Project Path="test/Plaat.Mobile.IntegrationTests/Plaat.Mobile.IntegrationTests.csproj" />
+</Solution>
