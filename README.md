@@ -1,3 +1,5 @@
+[![build and test](https://github.com/dijssel30/Plaat/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/dijssel30/Plaat/actions/workflows/build-and-test.yml)
+
 ## About The Project
 
 Plaat is self hosted music streaming service for your own music collection.
