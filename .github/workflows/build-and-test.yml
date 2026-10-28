@@ -39,4 +39,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Test Biz
-      run: dotnet test test/Plaat.Biz.Tests --no-restore --verbosity normal
+      run: dotnet test test/Plaat.Api.Tests --no-restore --verbosity normal
