@@ -64,4 +64,9 @@ public sealed class PlaatOptions
     /// overloading the machine while a scan runs. Raise it only on a box with cycles to spare.
     /// </summary>
     public int LoudnessAnalysisMaxDegreeOfParallelism { get; init; } = 1;
+
+    /// <summary>
+    /// If set to false, all background services will be disabled (default true)
+    /// </summary>
+    public bool EnableBackgroundServices { get; init; } = true;
 }

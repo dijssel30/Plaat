@@ -1,16 +1,18 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Plaat.Biz.Options;
 using Plaat.Biz.Workers;
 
 namespace Plaat.Biz.BackgroundServices;
 
 public partial class DatabaseBackupBackgroundService(
     DatabaseBackupService backupService,
+    PlaatOptions plaatOptions,
     ILogger<DatabaseBackupBackgroundService> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (!backupService.Settings.Enabled)
+        if (!backupService.Settings.Enabled || !plaatOptions.EnableBackgroundServices)
         {
             return;
         }

@@ -1,12 +1,20 @@
 using Microsoft.Extensions.Hosting;
+using Plaat.Biz.Options;
 using Plaat.Biz.Workers;
 
 namespace Plaat.Biz.BackgroundServices;
 
-public sealed class LoudnessAnalysisBackgroundService(LoudnessAnalysisQueueService queueService) : BackgroundService
+public sealed class LoudnessAnalysisBackgroundService(
+    LoudnessAnalysisQueueService queueService,
+    PlaatOptions plaatOptions) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        if (!plaatOptions.EnableBackgroundServices)
+        {
+            return;
+        }
+
         while (!stoppingToken.IsCancellationRequested)
         {
             queueService.TryStartAnalysis();
