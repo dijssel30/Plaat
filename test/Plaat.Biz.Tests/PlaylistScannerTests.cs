@@ -12,7 +12,7 @@ public sealed class PlaylistScannerTests
 {
     private static PlaatOptions BuildOptions()
     {
-        return new()
+        return new PlaatOptions
         {
             ImagesStoragePath = "/images",
             TargetReconvertedPath = "/converted",

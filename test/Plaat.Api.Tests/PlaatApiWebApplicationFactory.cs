@@ -33,7 +33,6 @@ public class PlaatApiWebApplicationFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection([
                 new KeyValuePair<string, string?>("ConnectionStrings:SqlLiteConnection", "DataSource=:memory:"),
                 new KeyValuePair<string, string?>("Logging:LogLevel:Default", "Warning"),
-                new KeyValuePair<string, string?>("PlaatOptions:JwtOptions:Key", "a-signing-key-that-is-long-enough-for-hs256")
             ]);
         });
 

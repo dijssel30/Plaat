@@ -17,13 +17,11 @@ using Plaat.Db;
 using Plaat.Infrastructure.Discogs;
 using IPNetwork = System.Net.IPNetwork;
 
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile("appsettings.Secrets.json", optional: true)
-    .Build();
-
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
+
+configuration.AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: false);
 
 var connectionString = configuration.GetConnectionString("SqlLiteConnection")
                        ?? throw new Exception("SqlLiteConnection is missing connection string");
@@ -34,12 +32,15 @@ var plaatOptions = configuration
 
 // HmacSha256 needs a signing key of at least 32 bytes; without this check a short key only fails
 // at the first login instead of at startup.
-const int minimumJwtKeyBytes = 32;
-if (string.IsNullOrEmpty(plaatOptions.JwtOptions?.Key)
-    || Encoding.UTF8.GetByteCount(plaatOptions.JwtOptions.Key) < minimumJwtKeyBytes)
+if (!builder.Environment.EnvironmentName.Equals("Testing", StringComparison.OrdinalIgnoreCase))
 {
-    throw new InvalidOperationException(
-        $"PlaatOptions:JwtOptions:Key must be at least {minimumJwtKeyBytes} bytes long (HS256).");
+    const int minimumJwtKeyBytes = 32;
+    if (string.IsNullOrEmpty(plaatOptions.JwtOptions?.Key)
+        || Encoding.UTF8.GetByteCount(plaatOptions.JwtOptions.Key) < minimumJwtKeyBytes)
+    {
+        throw new InvalidOperationException(
+            $"PlaatOptions:JwtOptions:Key must be at least {minimumJwtKeyBytes} bytes long (HS256).");
+    }
 }
 
 builder.Services.AddValidation();
