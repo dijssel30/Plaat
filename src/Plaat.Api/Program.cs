@@ -35,7 +35,7 @@ var plaatOptions = configuration
 // HmacSha256 needs a signing key of at least 32 bytes; without this check a short key only fails
 // at the first login instead of at startup.
 const int minimumJwtKeyBytes = 32;
-if (string.IsNullOrEmpty(plaatOptions.JwtOptions.Key)
+if (string.IsNullOrEmpty(plaatOptions.JwtOptions?.Key)
     || Encoding.UTF8.GetByteCount(plaatOptions.JwtOptions.Key) < minimumJwtKeyBytes)
 {
     throw new InvalidOperationException(
