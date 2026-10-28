@@ -43,3 +43,19 @@ jobs:
 
     - name: Test Biz
       run: dotnet test test/Plaat.Biz.Tests --no-restore --verbosity normal
+
+    - name: Test Contract
+      run: dotnet test test/Plaat.Contract.Tests --no-restore --verbosity normal
+
+    - name: Test Db
+      run: dotnet test test/Plaat.Db.Tests --no-restore --verbosity normal
+
+    - name: Test Frontend
+      run: dotnet test test/Plaat.Frontend.Tests --no-restore --verbosity normal
+
+    - name: Test Infrastructure
+      run: dotnet test test/Plaat.Infrastructure.Tests --no-restore --verbosity normal
+
+    - name: Test Mobile
+      run: dotnet test test/Plaat.Mobile.Tests --no-restore --verbosity normal
+
