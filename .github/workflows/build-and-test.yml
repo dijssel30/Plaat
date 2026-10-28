@@ -38,5 +38,5 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Test
-      run: dotnet test test/Plaat.Api.Tests --no-restore --verbosity normal
+    - name: Test Biz
+      run: dotnet test test/Plaat.Biz.Tests --no-restore --verbosity normal
