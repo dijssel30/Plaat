@@ -47,8 +47,8 @@ On first use, update the default password of the Admin user.
 Some useful settings you may want to edit in the Appsettings:
 
 API:
-- [b]Swagger:Enabled[/b] Change when you don't want Swagger to be enabled. If you only want it to be accessible from some networks, you can set [b]Swagger:AllowedNetworks[/b]. The default production setting is to allow Swagger only from local networks.
-- [b]PlaatOptions:ImagesStoragePath[/b] Folder the album covers end up
-- [b]PlaatOptions:TargetReconvertedPath[/b] Folder reconverted music files end up
-- [b]ConnectionStrings:SqlLiteConnection[/b] Specify a custom connection string for your sqlite database
-- [b]PlaatOptions:JwtOptions:Key[/b] (Required) Key for signing the authentication tokens.
+- **Swagger:Enabled** Change when you don't want Swagger to be enabled. If you only want it to be accessible from some networks, you can set **Swagger:AllowedNetworks**. The default production setting is to allow Swagger only from local networks.
+- **PlaatOptions:ImagesStoragePath** Folder the album covers end up
+- **PlaatOptions:TargetReconvertedPath** Folder reconverted music files end up
+- **ConnectionStrings:SqlLiteConnection** Specify a custom connection string for your sqlite database
+- **PlaatOptions:JwtOptions:Key** (Required) Key for signing the authentication tokens.
