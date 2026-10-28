@@ -41,30 +41,5 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Test Api
-      run: dotnet test test/Plaat.Api.Tests --no-restore --verbosity normal
-
-    - name: Test Biz
-      run: dotnet test test/Plaat.Biz.Tests --no-restore --verbosity normal
-
-    - name: Test Contract
-      run: dotnet test test/Plaat.Contract.Tests --no-restore --verbosity normal
-
-    - name: Test Db
-      run: dotnet test test/Plaat.Db.Tests --no-restore --verbosity normal
-
-    - name: Test Frontend
-      run: dotnet test test/Plaat.Frontend.Tests --no-restore --verbosity normal
-
-    - name: Test Infrastructure
-      run: dotnet test test/Plaat.Infrastructure.Tests --no-restore --verbosity normal
-
-    - name: Test Mobile
-      run: dotnet test test/Plaat.Mobile.Tests --no-restore --verbosity normal
-
-    - name: Test E2E
-      run: dotnet test test/Plaat.Frontend.E2E.Tests --no-restore --verbosity normal
-
-    - name: Test Mobile Integration Tests
-      run: dotnet test test/Plaat.Mobile.IntegrationTests --no-restore --verbosity normal
-
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal

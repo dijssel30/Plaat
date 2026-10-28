@@ -21,6 +21,12 @@ Features:
 
 ## Getting Started
 
+### Prerequisites
+
+The Dotnet 10 SDK needs to be installed on your system to build the solution. FFmpeg needs to be installed on the system running the Plaat.Api application.
+
+### Building
+
 ```bash
 dotnet build                                   # build whole solution (Plaat.slnx)
 dotnet test                                    # run all test projects
@@ -30,6 +36,17 @@ dotnet run --project Plaat.Frontend            # run the Blazor frontend (expect
 
 ### Installation
 
-Plaat consists of two main applications, both the Plaat.Api and Plaat.Frontend projects need to be build using the dotnet SDK.
-Adjust the configuration in Appsettings accordingly to your preferences and setup.
-If you are planning to host on a remote server you can use the deploy script to automatically build and copy using ssh.
+Both the Plaat.Api and Plaat.Frontend project need to be build and running to use Plaat.
+See the deploy folder for an example how to build and use the application.
+On first use, update the default password of the Admin user.
+
+### Set-up
+
+Some useful settings you may want to edit in the Appsettings:
+
+API:
+- [b]Swagger:Enabled[/b] Change when you don't want Swagger to be enabled. If you only want it to be accessible from some networks, you can set [b]Swagger:AllowedNetworks[/b]. The default production setting is to allow Swagger only from local networks.
+- [b]PlaatOptions:ImagesStoragePath[/b] Folder the album covers end up
+- [b]PlaatOptions:TargetReconvertedPath[/b] Folder reconverted music files end up
+- [b]ConnectionStrings:SqlLiteConnection[/b] Specify a custom connection string for your sqlite database
+- [b]PlaatOptions:JwtOptions:Key[/b] (Required) Key for signing the authentication tokens.
