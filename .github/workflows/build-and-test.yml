@@ -62,3 +62,9 @@ jobs:
     - name: Test Mobile
       run: dotnet test test/Plaat.Mobile.Tests --no-restore --verbosity normal
 
+    - name: Test E2E
+      run: dotnet test test/Plaat.Frontend.E2E.Tests --no-restore --verbosity normal
+
+    - name: Test Mobile Integration Tests
+      run: dotnet test test/Plaat.Mobile.IntegrationTests --no-restore --verbosity normal
+
