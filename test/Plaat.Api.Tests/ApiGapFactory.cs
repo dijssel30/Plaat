@@ -56,10 +56,13 @@ public sealed class ApiGapFactory : PlaatApiWebApplicationFactory
         {
             context.Database.EnsureCreated();
             var hasher = new PasswordHasher<string>();
-            context.Users.AddRange(
-                new User { Username = "testuser", PasswordHash = hasher.HashPassword("testuser", Password), IsAdmin = true },
-                new User { Username = "alice", PasswordHash = hasher.HashPassword("alice", Password) });
-            context.SaveChanges();
+            if (!context.Users.Any(u => u.Username == "alice" || u.Username == "testuser"))
+            {
+                context.AddRange(
+                    new User { Username = "testuser", PasswordHash = hasher.HashPassword("testuser", Password), IsAdmin = true },
+                    new User { Username = "alice", PasswordHash = hasher.HashPassword("alice", Password) });
+                context.SaveChanges();
+            }
         }
 
         Directory.CreateDirectory(ImagesPath);

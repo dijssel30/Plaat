@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using Plaat.Biz.Options;
 using Plaat.Db.Repositories;
@@ -29,7 +31,8 @@ public class PlaatApiWebApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureAppConfiguration(config =>
         {
             config.AddInMemoryCollection([
-                new KeyValuePair<string, string?>("ConnectionStrings:SqlLiteConnection", "DataSource=:memory:")
+                new KeyValuePair<string, string?>("ConnectionStrings:SqlLiteConnection", "DataSource=:memory:"),
+                new KeyValuePair<string, string?>("Logging:LogLevel:Default", "Warning"),
             ]);
         });
 
@@ -45,13 +48,15 @@ public class PlaatApiWebApplicationFactory : WebApplicationFactory<Program>
             services.AddSingleton(StatsRepository);
             services.AddSingleton(TrackRatingRepository);
 
+            services.RemoveAll<IHostedService>();
+
             // Override with deterministic options, independent of whatever the developer's local
             // (gitignored, machine-specific) appsettings.json/appsettings.Secrets.json happen to contain.
             services.AddSingleton(new PlaatOptions
             {
                 ImagesStoragePath = "/images",
                 TargetReconvertedPath = "/reconverted",
-                JwtOptions = new JwtOptions { Key = "test-key" },
+                JwtOptions = new JwtOptions { Key = "a-signing-key-that-is-long-enough-for-hs256" },
                 DiscogsSettings = new DiscogsSettings { Enabled = true }
             });
 
