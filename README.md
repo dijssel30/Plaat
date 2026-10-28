@@ -2,7 +2,7 @@
 
 ## About The Project
 
-Plaat is self hosted music streaming service for your own music collection.
+Plaat is self hosted music streaming service for your own music collection. Written in C# and Blazor.
 
 Features:
 - Support for most music formats
@@ -13,13 +13,6 @@ Features:
 - Automatically reconvert files if they are of unsupported format like ALAC
 - Keep track of play counts
 - Create smart playlists based on complex rules
-
-
-## Screenshots
-![Artist overview](images/artist-view.png)
-![Album overview](images/album-view.png)
-![All albums](images/all-albums.png)
-![Create smart playlist](images/create-playlist.png)
 
 ## Getting Started
 
