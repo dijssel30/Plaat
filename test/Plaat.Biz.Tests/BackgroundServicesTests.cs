@@ -85,7 +85,8 @@ public sealed class BackgroundServicesTests : IDisposable
     {
         var repository = Substitute.For<IPlaylistRepository>();
         var service = new SmartPlaylistCountRecalculationBackgroundService(
-            new SmartPlaylistCountService(repository, NullLogger<SmartPlaylistCountService>.Instance));
+            new SmartPlaylistCountService(repository, NullLogger<SmartPlaylistCountService>.Instance),
+            Options());
         using var cts = new CancellationTokenSource();
 
         var run = Execute(service, cts.Token);
@@ -105,7 +106,7 @@ public sealed class BackgroundServicesTests : IDisposable
             new LoudnessAnalyzer(NullLogger<LoudnessAnalyzer>.Instance),
             Options(),
             NullLogger<LoudnessAnalysisQueueService>.Instance);
-        var service = new LoudnessAnalysisBackgroundService(queue);
+        var service = new LoudnessAnalysisBackgroundService(queue, Options());
         using var cts = new CancellationTokenSource();
 
         var run = Execute(service, cts.Token);
@@ -122,7 +123,7 @@ public sealed class BackgroundServicesTests : IDisposable
         var scanner = Substitute.For<IMusicScanner>();
         var scanService = new MonitoredFolderScanService(
             _fixture.DbFactory, ScopeFactoryFor(scanner), NullLogger<MonitoredFolderScanService>.Instance);
-        var service = new MonitoredFolderScanBackgroundService(scanService);
+        var service = new MonitoredFolderScanBackgroundService(scanService, Options());
         using var cts = new CancellationTokenSource();
 
         var run = Execute(service, cts.Token);
@@ -140,7 +141,7 @@ public sealed class BackgroundServicesTests : IDisposable
             NullLogger<ConvertQueueService>.Instance,
             Options(),
             new QaacHelper(NullLogger<QaacHelper>.Instance, Options()));
-        var service = new ConvertQueueBackgroundService(queue);
+        var service = new ConvertQueueBackgroundService(queue, Options());
         using var cts = new CancellationTokenSource();
 
         var run = Execute(service, cts.Token);
@@ -169,10 +170,10 @@ public sealed class BackgroundServicesTests : IDisposable
             _fixture.DbFactory, Substitute.For<IServiceScopeFactory>(), NullLogger<MonitoredFolderScanService>.Instance);
 
         await Execute(new SmartPlaylistCountRecalculationBackgroundService(
-            new SmartPlaylistCountService(repository, NullLogger<SmartPlaylistCountService>.Instance)), new CancellationToken(true));
-        await Execute(new LoudnessAnalysisBackgroundService(loudness), new CancellationToken(true));
-        await Execute(new ConvertQueueBackgroundService(convert), new CancellationToken(true));
-        await Execute(new MonitoredFolderScanBackgroundService(scanService), new CancellationToken(true));
+            new SmartPlaylistCountService(repository, NullLogger<SmartPlaylistCountService>.Instance), Options()), new CancellationToken(true));
+        await Execute(new LoudnessAnalysisBackgroundService(loudness, Options()), new CancellationToken(true));
+        await Execute(new ConvertQueueBackgroundService(convert, Options()), new CancellationToken(true));
+        await Execute(new MonitoredFolderScanBackgroundService(scanService, Options()), new CancellationToken(true));
 
         repository.ReceivedCalls().ShouldBeEmpty();
         loudness.IsBusy.ShouldBeFalse();
@@ -187,7 +188,7 @@ public sealed class BackgroundServicesTests : IDisposable
         var backup = new DatabaseBackupService(
             factory ?? _fixture.DbFactory, Options(settings), NullLogger<DatabaseBackupService>.Instance);
 
-        return new DatabaseBackupBackgroundService(backup, NullLogger<DatabaseBackupBackgroundService>.Instance);
+        return new DatabaseBackupBackgroundService(backup, Options(), NullLogger<DatabaseBackupBackgroundService>.Instance);
     }
 
     private string BackupFolder
