@@ -57,7 +57,7 @@ public class PlaatApiWebApplicationFactory : WebApplicationFactory<Program>
             {
                 ImagesStoragePath = "/images",
                 TargetReconvertedPath = "/reconverted",
-                JwtOptions = new JwtOptions { Key = "test-key" },
+                JwtOptions = new JwtOptions { Key = "a-signing-key-that-is-long-enough-for-hs256" },
                 DiscogsSettings = new DiscogsSettings { Enabled = true }
             });
 

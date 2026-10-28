@@ -155,7 +155,7 @@ public sealed class AlbumsEndpointTests(PlaatApiWebApplicationFactory factory)
     [Fact]
     public async Task UploadAlbumCover_WithSpoofedContentType_ReturnsBadRequest()
     {
-        using var content = BuildImageForm("<script>alert(1)</script>"u8.ToArray(), "image/png");
+        using var content = BuildImageForm([.. "<script>alert(1)</script>"u8], "image/png");
         var response = await _client.PostAsync("/api/albums/42/cover", content);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -171,7 +171,7 @@ public sealed class AlbumsEndpointTests(PlaatApiWebApplicationFactory factory)
                 {
                     ImagesStoragePath = imagesDir,
                     TargetReconvertedPath = "/reconverted",
-                    JwtOptions = new JwtOptions { Key = "test-key" },
+                    JwtOptions = new JwtOptions { Key = "a-signing-key-that-is-long-enough-for-hs256" },
                     DiscogsSettings = new DiscogsSettings { Enabled = true }
                 });
             });

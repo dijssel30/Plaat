@@ -30,7 +30,7 @@ public sealed class AuthRateLimitTests : IClassFixture<PlaatApiWebApplicationFac
                 {
                     ImagesStoragePath = "/images",
                     TargetReconvertedPath = "/reconverted",
-                    JwtOptions = new JwtOptions { Key = "test-key" },
+                    JwtOptions = new JwtOptions { Key = "a-signing-key-that-is-long-enough-for-hs256" },
                     RateLimitSettings = new RateLimitSettings
                     {
                         LoginPermitLimit = LoginLimit,
