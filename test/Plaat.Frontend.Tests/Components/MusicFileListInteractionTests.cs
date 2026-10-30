@@ -350,15 +350,18 @@ public sealed class MusicFileListInteractionTests : BunitContext, IAsyncLifetime
     }
 
     [Fact]
-    public void Menu_TrackInfo_OpensTheModalForThatTrackAndClosingClearsIt()
+    public async Task Menu_TrackInfo_OpensTheModalForThatTrackAndClosingClearsIt()
     {
         var root = RenderList();
 
         ClickMenuItem(root, "Track info");
 
         var modal = root.FindComponent<Bunit.TestDoubles.Stub<TrackDetailsModal>>();
-        modal.Instance.Parameters.Get(x => x.TrackId).ShouldBe(1u);
-        root.InvokeAsync(() => modal.Instance.Parameters.Get(x => x.OnClose).InvokeAsync());
+        await root.WaitForAssertionAsync(() =>
+        {
+            modal.Instance.Parameters.Get(x => x.TrackId).ShouldBe(1u);
+        });
+        await root.InvokeAsync(() => modal.Instance.Parameters.Get(x => x.OnClose).InvokeAsync());
         root.FindComponent<Bunit.TestDoubles.Stub<TrackDetailsModal>>().Instance.Parameters.Get(x => x.TrackId).ShouldBeNull();
     }
 
