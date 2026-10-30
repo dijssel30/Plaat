@@ -50,6 +50,11 @@ public interface IAlbumRepository
     /// Gets a summary of every album the user has marked as a favorite.
     /// </summary>
     Task<IReadOnlyCollection<AlbumOnlyDto>> GetFavoriteAlbums(int userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Add a play for each track in the album.
+    /// </summary>
+    Task CountAllTracksAsPlayed(uint albumId, int userId, CancellationToken cancellationToken);
 }
 
 internal sealed class AlbumRepository(
@@ -260,5 +265,28 @@ internal sealed class AlbumRepository(
                 Artists = a.AlbumArtists.Select(aa => new ArtistOnlyDto { Id = aa.Id, Name = aa.Name }).ToArray()
             })
             .ToArrayAsync(cancellationToken);
+    }
+
+    public async Task CountAllTracksAsPlayed(
+        uint albumId,
+        int userId,
+        CancellationToken cancellationToken)
+    {
+        var time = DateTime.UtcNow;
+
+        await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
+
+        var tracks = await context.Tracks
+            .Include(t => t.Plays)
+            .Where(a => a.AlbumId == albumId)
+            .ToArrayAsync(cancellationToken);
+
+        foreach (var track in tracks)
+        {
+            track.PlayCount++;
+            track.Plays.Add(new Play { UserId = userId, DateTime = time });
+        }
+
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
