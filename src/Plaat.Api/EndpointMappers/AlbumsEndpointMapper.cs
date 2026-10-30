@@ -39,6 +39,11 @@ public static class AlbumsEndpointMapper
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
 
+        apiGroup.MapPost("{id:int}/play", CountAllTracksAsPlayed)
+            .WithSummary("Add a play for all tracks in the album")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+
         apiGroup.MapDelete("{id:int}/favorite", RemoveAlbumFavorite)
             .WithSummary("Remove an album from the current user's favorites")
             .Produces(StatusCodes.Status200OK)
@@ -173,5 +178,14 @@ public static class AlbumsEndpointMapper
         CancellationToken ct)
     {
         await repository.SetAlbumFavorite(id, user.GetUserId(), false, ct);
+    }
+
+    private static async Task CountAllTracksAsPlayed(
+        [FromRoute] uint id,
+        [FromServices] IAlbumRepository repository,
+        ClaimsPrincipal user,
+        CancellationToken ct)
+    {
+        await repository.CountAllTracksAsPlayed(id, user.GetUserId(), ct);
     }
 }

@@ -69,6 +69,18 @@ public sealed class AlbumsEndpointTests(PlaatApiWebApplicationFactory factory)
     }
 
     [Fact]
+    public async Task CountAllTracksAsPlayed_CountsAllTracksAsPlayed()
+    {
+        var response = await _client.PostAsync("/api/albums/42/play", null);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await factory.AlbumRepository.Received(1).CountAllTracksAsPlayed(
+            Arg.Any<uint>(),
+            1,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task GetAlbum_WhenNotFound_ReturnsNoContent()
     {
         factory.AlbumRepository.GetAlbum(Arg.Any<uint>(), Arg.Any<CancellationToken>())

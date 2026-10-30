@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Plaat.Db.Models;
 using Plaat.Db.Tests.Helpers;
 using Shouldly;
@@ -205,6 +206,44 @@ public sealed class AlbumRepositoryTests
 
         result.ShouldNotBeNull();
         result.Tracks.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task CountAllTracksAsPlayed_IncreasesPlayCountOnAllTracks()
+    {
+        using var fixture = new DbTestFixture();
+        var album = fixture.SeedAlbum("CountAllAsPlayed");
+
+        var time = DateTime.UtcNow;
+
+        await using (var ctx = fixture.CreateContext())
+        {
+            ctx.Add(new User { Id = 1, Username = "username", PasswordHash = "strong hash" });
+
+            ctx.Tracks.AddRange(
+                new Track { Title = "One", AlbumId = album.Id, TrackNumber = 1, FileHash = "a", MimeType = "audio/mpeg", PlayCount = 0 },
+                new Track { Title = "Two", AlbumId = album.Id, TrackNumber = 2, FileHash = "b", MimeType = "audio/mpeg", PlayCount = 1, Plays = [new Play { DateTime = time }] });
+            await ctx.SaveChangesAsync();
+        }
+
+        var repo = fixture.CreateAlbumRepository();
+        await repo.CountAllTracksAsPlayed(album.Id, 1, CancellationToken.None);
+
+        var albumDto = await repo.GetAlbum(album.Id, CancellationToken.None);
+
+        albumDto.ShouldNotBeNull();
+        albumDto.Tracks.Count.ShouldBe(2);
+        albumDto.Tracks.First().Id.ShouldBe(1u);
+        albumDto.Tracks.Skip(1).First().Id.ShouldBe(2u);
+
+        await using (var ctx = fixture.CreateContext())
+        {
+            var firstTrack = await ctx.Tracks.Include(t => t.Plays).SingleAsync(t => t.TrackNumber == 1);
+            var secondTrack = await ctx.Tracks.Include(t => t.Plays).SingleAsync(t => t.TrackNumber == 2);
+
+            firstTrack.Plays.Count.ShouldBe(1);
+            secondTrack.Plays.Count.ShouldBe(2);
+        }
     }
 
     [Fact]
