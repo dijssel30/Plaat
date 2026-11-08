@@ -21,7 +21,28 @@ internal static class AudioFiles
             UseShellExecute = false
         };
 
-        foreach (var argument in (string[])["-loglevel", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono", "-t", "0.2", .. codecArguments, path])
+        var codec = Path.GetExtension(path).ToLowerInvariant() switch
+        {
+            ".flac" => "flac",
+            ".mp3" => "mp3",
+            ".ogg" => "libvorbis",
+            ".m4a" => "aac",
+            _ => null
+        };
+
+        if (codec is not null)
+        {
+            startInfo.ArgumentList.Add("-c:a");
+            startInfo.ArgumentList.Add(codec);
+        }
+
+        string[] otherArguments =
+        [
+            "-loglevel", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono", "-t", "0.2", .. codecArguments,
+            path
+        ];
+
+        foreach (var argument in otherArguments)
         {
             startInfo.ArgumentList.Add(argument);
         }
