@@ -36,6 +36,11 @@ internal static class AudioFiles
         var error = await process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();
 
+        var output = await process.StandardOutput.ReadToEndAsync();
+
+        Console.WriteLine(error);
+        Console.WriteLine(output);
+
         if (process.ExitCode != 0)
         {
             throw new InvalidOperationException($"ffmpeg failed creating {path}: {error}");
