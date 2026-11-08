@@ -18,13 +18,17 @@ internal static class AudioFiles
         {
             FileName = "ffmpeg",
             RedirectStandardError = true,
-            RedirectStandardOutput = true,
             UseShellExecute = false
         };
 
         string[] otherArguments =
         [
-            "-loglevel", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono", "-t", "0.2", .. codecArguments,
+            "-loglevel", "error",
+            "-y",
+            "-f", "lavfi",
+            "-i", "anullsrc=r=44100:cl=mono",
+            "-t", "0.2",
+            .. codecArguments,
             path
         ];
 
@@ -35,13 +39,7 @@ internal static class AudioFiles
 
         using var process = Process.Start(startInfo)!;
         var error = await process.StandardError.ReadToEndAsync();
-        var output = await process.StandardOutput.ReadToEndAsync();
-
         await process.WaitForExitAsync();
-
-
-        Console.WriteLine(error);
-        Console.WriteLine(output);
 
         if (process.ExitCode != 0)
         {

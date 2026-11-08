@@ -32,8 +32,4 @@
         <ProjectReference Include="..\..\src\Plaat.Frontend\Plaat.Frontend.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-    </ItemGroup>
-
 </Project>
