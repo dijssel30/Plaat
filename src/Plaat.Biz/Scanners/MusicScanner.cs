@@ -102,7 +102,7 @@ internal partial class MusicScanner(
         if (options.PrecalculatedHashCsvPath is not null
             && File.Exists(options.PrecalculatedHashCsvPath))
         {
-            await LoadPreCalculatedHashes(options.PrecalculatedHashCsvPath);
+            await LoadPreCalculatedHashes(options.PrecalculatedHashCsvPath, ct);
         }
 
         var files = Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).ToList();
@@ -126,26 +126,27 @@ internal partial class MusicScanner(
         if (options.PrecalculatedHashCsvPath is not null
             && File.Exists(options.PrecalculatedHashCsvPath))
         {
-            await LoadPreCalculatedHashes(options.PrecalculatedHashCsvPath);
+            await LoadPreCalculatedHashes(options.PrecalculatedHashCsvPath, ct);
         }
 
-        using var reader = new StreamReader(csvPath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        await using var csv = CsvReader.FromFile(
+            csvPath,
+            new CsvReaderOptions { FormatProvider = CultureInfo.InvariantCulture });
 
         var files = new List<string>();
-        while (await csv.ReadAsync())
+        while (await csv.ReadAsync(ct))
         {
-            var path = csv.GetField(0);
+            var path = csv.GetString(0);
             path = pathReplacer.GetTargetPath(path);
 
-            var playCount = csv.GetField<uint>(1);
+            var playCount = uint.Parse(csv.GetString(1));
 
             DateTime? date = null;
 
-            if (csv.Parser.Count > 2)
+            if (csv.Headers.Count > 2)
             {
-                var rawDate = csv.GetField(2);
-                date = rawDate is null
+                var rawDate = csv.GetString(2);
+                date = string.IsNullOrWhiteSpace(rawDate)
                     ? null
                     : DateTime.ParseExact(
                         rawDate,
@@ -154,7 +155,7 @@ internal partial class MusicScanner(
                     );
             }
 
-            if (path is null || !Path.Exists(path))
+            if (string.IsNullOrWhiteSpace(path) || !Path.Exists(path))
             {
                 LogFileMissing(logger, path);
                 continue;
@@ -188,7 +189,7 @@ internal partial class MusicScanner(
         if (options.PrecalculatedHashCsvPath is not null
             && File.Exists(options.PrecalculatedHashCsvPath))
         {
-            await LoadPreCalculatedHashes(options.PrecalculatedHashCsvPath);
+            await LoadPreCalculatedHashes(options.PrecalculatedHashCsvPath, ct);
         }
 
         var files = new List<string>();
@@ -254,17 +255,20 @@ internal partial class MusicScanner(
         return $"\"{value.Replace("\"", "\"\"")}\"";
     }
 
-    private async Task LoadPreCalculatedHashes(string precalculatedHashCsvPath)
+    private async Task LoadPreCalculatedHashes(
+        string precalculatedHashCsvPath,
+        CancellationToken ct)
     {
-        using var reader = new StreamReader(precalculatedHashCsvPath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        await using var csv = CsvReader.FromFile(
+            precalculatedHashCsvPath,
+            new CsvReaderOptions { FormatProvider = CultureInfo.InvariantCulture });
 
-        while (await csv.ReadAsync())
+        while (await csv.ReadAsync(ct))
         {
-            var path = csv.GetField(0);
-            var hash = csv.GetField(1);
+            var path = csv.GetString(0);
+            var hash = csv.GetString(1);
 
-            if (path is not null && hash is { Length: 32 })
+            if (!string.IsNullOrWhiteSpace(path) && hash is { Length: 32 })
             {
                 _precalcualtedHashes.TryAdd(path, hash);
             }
