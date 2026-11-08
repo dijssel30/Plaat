@@ -18,6 +18,7 @@ internal static class AudioFiles
         {
             FileName = "ffmpeg",
             RedirectStandardError = true,
+            RedirectStandardOutput = true,
             UseShellExecute = false
         };
 
