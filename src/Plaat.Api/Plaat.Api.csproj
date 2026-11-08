@@ -5,7 +5,6 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsNotAsErrors>NU1903</WarningsNotAsErrors>
         <SelfContained>true</SelfContained>
         <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>

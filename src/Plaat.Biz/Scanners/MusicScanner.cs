@@ -131,7 +131,7 @@ internal partial class MusicScanner(
 
         await using var csv = CsvReader.FromFile(
             csvPath,
-            new CsvReaderOptions { FormatProvider = CultureInfo.InvariantCulture });
+            new CsvReaderOptions { HasHeader = false, FormatProvider = CultureInfo.InvariantCulture });
 
         var files = new List<string>();
         while (await csv.ReadAsync(ct))
@@ -143,7 +143,7 @@ internal partial class MusicScanner(
 
             DateTime? date = null;
 
-            if (csv.Headers.Count > 2)
+            if (csv.FieldCount > 2)
             {
                 var rawDate = csv.GetString(2);
                 date = string.IsNullOrWhiteSpace(rawDate)
@@ -261,7 +261,7 @@ internal partial class MusicScanner(
     {
         await using var csv = CsvReader.FromFile(
             precalculatedHashCsvPath,
-            new CsvReaderOptions { FormatProvider = CultureInfo.InvariantCulture });
+            new CsvReaderOptions { HasHeader = false, FormatProvider = CultureInfo.InvariantCulture });
 
         while (await csv.ReadAsync(ct))
         {
