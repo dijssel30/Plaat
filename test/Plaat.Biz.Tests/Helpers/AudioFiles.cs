@@ -35,9 +35,10 @@ internal static class AudioFiles
 
         using var process = Process.Start(startInfo)!;
         var error = await process.StandardError.ReadToEndAsync();
+        var output = await process.StandardOutput.ReadToEndAsync();
+
         await process.WaitForExitAsync();
 
-        var output = await process.StandardOutput.ReadToEndAsync();
 
         Console.WriteLine(error);
         Console.WriteLine(output);
