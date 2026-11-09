@@ -21,7 +21,18 @@ internal static class AudioFiles
             UseShellExecute = false
         };
 
-        foreach (var argument in (string[])["-loglevel", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono", "-t", "0.2", .. codecArguments, path])
+        string[] otherArguments =
+        [
+            "-loglevel", "error",
+            "-y",
+            "-f", "lavfi",
+            "-i", "anullsrc=r=44100:cl=mono",
+            "-t", "0.2",
+            .. codecArguments,
+            path
+        ];
+
+        foreach (var argument in otherArguments)
         {
             startInfo.ArgumentList.Add(argument);
         }
