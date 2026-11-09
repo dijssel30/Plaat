@@ -343,10 +343,10 @@ public sealed class MusicFileListInteractionTests : BunitContext, IAsyncLifetime
         var root = RenderList();
 
         ClickMenuItem(root, "Add to queue");
-        _queue.Last().Id.ShouldBe(1u);
+        root.WaitForAssertion(() => _queue.Last().Id.ShouldBe(1u));
 
         ClickMenuItem(root, "Play next");
-        _queue[1].Id.ShouldBe(1u);
+        root.WaitForAssertion(() => _queue[1].Id.ShouldBe(1u));
     }
 
     [Fact]
