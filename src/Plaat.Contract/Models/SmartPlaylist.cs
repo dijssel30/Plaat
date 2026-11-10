@@ -81,7 +81,13 @@ public sealed class SmartPlaylistRulesDto
 [JsonDerivedType(typeof(YearRuleDto), nameof(YearRuleDto))]
 [JsonDerivedType(typeof(BitrateRuleDto), nameof(BitrateRuleDto))]
 [JsonDerivedType(typeof(StarsRuleDto), nameof(StarsRuleDto))]
-public abstract class SmartPlaylistRuleDto;
+public
+#if NET11_0_OR_GREATER
+closed
+#else
+abstract
+#endif
+    class SmartPlaylistRuleDto;
 
 public enum PlayCountPlaylistRuleType
 {
