@@ -67,7 +67,15 @@ public partial class SeekBar : ComponentBase
             return;
         }
 
-        var rect = await JsRuntime.InvokeAsync<DomRect>("seekbar.getRect", _barRef);
+        DomRect rect;
+        try
+        {
+            rect = await JsRuntime.InvokeAsync<DomRect>("seekbar.getRect", _barRef);
+        }
+        catch
+        {
+            return;
+        }
 
         var relative = Math.Clamp((e.ClientX - rect.Left) / rect.Width, 0, 1);
         var newValue = Min + relative * (Max - Min);

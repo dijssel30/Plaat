@@ -44,12 +44,26 @@ public partial class QueuePanel : ComponentBase, IDisposable
         if (IsOpen && !_outsideClickListenerActive)
         {
             _outsideClickListenerActive = true;
-            await JsRuntime.InvokeVoidAsync("uiHelpers.addOutsideClickListener", _dotNetRef, _wrapperRef);
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("uiHelpers.addOutsideClickListener", _dotNetRef, _wrapperRef);
+            }
+            catch
+            {
+                return;
+            }
         }
         else if (!IsOpen && _outsideClickListenerActive)
         {
             _outsideClickListenerActive = false;
-            await JsRuntime.InvokeVoidAsync("uiHelpers.removeOutsideClickListener", _wrapperRef);
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("uiHelpers.removeOutsideClickListener", _wrapperRef);
+            }
+            catch
+            {
+                return;
+            }
         }
     }
 

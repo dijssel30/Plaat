@@ -111,14 +111,6 @@ public sealed class SmartRuleMapperTests
     }
 
     [Fact]
-    public void UnknownRuleDtoType_Throws()
-    {
-        var dto = new SmartPlaylistRuleGroupDto { Rules = [new UnknownRuleDto()] };
-
-        Should.Throw<InvalidOperationException>(() => SmartRuleMapper.FromDto(dto));
-    }
-
-    [Fact]
     public void HasAnyRule_LooksThroughChildGroups()
     {
         SmartRuleMapper.HasAnyRule(new SmartRuleGroupUiModel()).ShouldBeFalse();
@@ -146,6 +138,4 @@ public sealed class SmartRuleMapperTests
             ChildGroups = [new SmartRuleGroupUiModel { Rules = [emptyRange] }]
         }).ShouldBeTrue();
     }
-
-    private sealed class UnknownRuleDto : SmartPlaylistRuleDto;
 }

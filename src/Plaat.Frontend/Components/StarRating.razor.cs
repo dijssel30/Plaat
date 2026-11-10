@@ -86,7 +86,16 @@ public partial class StarRating : ComponentBase
         _preview = null;
         _rect = null;
 
-        var rect = await JsRuntime.InvokeAsync<StarRowRect?>("uiHelpers.beginPointerGesture", _rootRef, e.PointerId);
+        StarRowRect? rect;
+        try
+        {
+            rect = await JsRuntime.InvokeAsync<StarRowRect?>("uiHelpers.beginPointerGesture", _rootRef,
+                e.PointerId);
+        }
+        catch
+        {
+            return;
+        }
 
         // The press can be over before the measurement lands; a tap needs neither.
         if (_dragging)
@@ -181,7 +190,14 @@ public partial class StarRating : ComponentBase
 
     private ValueTask ReleaseCapture(long pointerId)
     {
-        return JsRuntime.InvokeVoidAsync("uiHelpers.endPointerGesture", _rootRef, pointerId);
+        try
+        {
+            return JsRuntime.InvokeVoidAsync("uiHelpers.endPointerGesture", _rootRef, pointerId);
+        }
+        catch
+        {
+            return ValueTask.CompletedTask;
+        }
     }
 
     /// <summary>

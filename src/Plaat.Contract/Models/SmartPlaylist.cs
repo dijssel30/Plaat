@@ -69,19 +69,8 @@ public sealed class SmartPlaylistRulesDto
 /// Base type for a single smart-playlist matching rule; the concrete subtype is carried in JSON
 /// via a type discriminator.
 /// </summary>
-[JsonDerivedType(typeof(PlayCountPlaylistRuleDto), nameof(PlayCountPlaylistRuleDto))]
-[JsonDerivedType(typeof(TitlePlaylistRuleDto), nameof(TitlePlaylistRuleDto))]
-[JsonDerivedType(typeof(ArtistNamePlaylistRuleDto), nameof(ArtistNamePlaylistRuleDto))]
-[JsonDerivedType(typeof(AlbumNamePlaylistRuleDto), nameof(AlbumNamePlaylistRuleDto))]
-[JsonDerivedType(typeof(GenrePlaylistRuleDto), nameof(GenrePlaylistRuleDto))]
-[JsonDerivedType(typeof(AddedDateRuleDto), nameof(AddedDateRuleDto))]
-[JsonDerivedType(typeof(AddedWithinDaysRuleDto), nameof(AddedWithinDaysRuleDto))]
-[JsonDerivedType(typeof(NotPlayedInDaysRuleDto), nameof(NotPlayedInDaysRuleDto))]
-[JsonDerivedType(typeof(DurationRangeRuleDto), nameof(DurationRangeRuleDto))]
-[JsonDerivedType(typeof(YearRuleDto), nameof(YearRuleDto))]
-[JsonDerivedType(typeof(BitrateRuleDto), nameof(BitrateRuleDto))]
-[JsonDerivedType(typeof(StarsRuleDto), nameof(StarsRuleDto))]
-public abstract class SmartPlaylistRuleDto;
+[JsonPolymorphic(InferClosedTypePolymorphism = true, UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
+public closed class SmartPlaylistRuleDto;
 
 public enum PlayCountPlaylistRuleType
 {
@@ -111,7 +100,8 @@ public enum DateComparisonType
 /// <summary>
 /// Rule matching tracks by a date value compared against a threshold.
 /// </summary>
-public class DatePlaylistRuleDto : SmartPlaylistRuleDto
+[JsonPolymorphic(InferClosedTypePolymorphism = true, UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
+public closed class DatePlaylistRuleDto : SmartPlaylistRuleDto
 {
     public DateComparisonType RuleType { get; set; }
     public DateTimeOffset Value { get; set; }
@@ -128,7 +118,8 @@ public enum TextMatchType
 /// <summary>
 /// Base type for rules matching tracks by a text field against a string value.
 /// </summary>
-public abstract class TextPlaylistRuleDto : SmartPlaylistRuleDto
+[JsonPolymorphic(InferClosedTypePolymorphism = true, UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
+public closed class TextPlaylistRuleDto : SmartPlaylistRuleDto
 {
     public TextMatchType TextMatchType { get; set; }
     public string Value { get; set; } = "";

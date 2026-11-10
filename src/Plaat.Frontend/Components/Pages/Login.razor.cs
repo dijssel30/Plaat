@@ -73,7 +73,9 @@ public partial class Login : ComponentBase, IDisposable
             return;
         }
 
+#pragma warning disable BL0013
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+#pragma warning restore BL0013
 
         if (state.User.Identity is { IsAuthenticated: true })
         {
