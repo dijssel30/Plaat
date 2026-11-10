@@ -30,7 +30,9 @@ public sealed class SeekBarComponentTests : BunitContext
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
+#pragma warning disable BL0016
             return InvokeAsync<TValue>(identifier, args);
+#pragma warning restore BL0016
         }
     }
 

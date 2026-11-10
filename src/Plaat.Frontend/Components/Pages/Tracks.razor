@@ -1,4 +1,5 @@
 @page "/tracks"
+@using Plaat.Contract
 @using Plaat.Contract.Models
 
 <PageTitle>Tracks</PageTitle>
@@ -21,7 +22,7 @@
         <div class="sortable right" @onclick="() => SetSort(TrackSortField.Plays)">Plays <span class="sort-indicator">@Indicator(TrackSortField.Plays)</span></div>
     </div>
     <div class="track-table-body">
-        <Virtualize @ref="_virtualize" ItemsProvider="LoadTracks" Context="track" ItemSize="37">
+        <Virtualize @ref="_virtualize" ItemsProvider="LoadTracks" ItemComparer="EqualityComparer<TrackDto>.Default" Context="track" ItemSize="37">
             <ItemContent>
                 <div class="track-table-row @(track.Id == _currentPlayingId ? "active" : "")"
                      @key="track.Id"
