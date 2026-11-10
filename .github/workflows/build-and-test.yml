@@ -33,7 +33,7 @@ jobs:
       run: sudo apt update && sudo apt install -y ffmpeg
 
     - name: Install workload dependencies
-      run: dotnet workload restore
+      run: dotnet workload restore --skip-manifest-update
 
     - name: Install dependencies
       run: dotnet restore
