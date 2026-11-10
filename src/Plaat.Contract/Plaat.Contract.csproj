@@ -5,15 +5,18 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(TargetFramework) == 'net11.0'">
         <Features>runtime-async=on</Features>
     </PropertyGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net11.0'">
-      <PackageReference Include="Microsoft.Extensions.Http" Version="11.*" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="11.*"/>
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net10.0'">
-        <PackageReference Include="Microsoft.Extensions.Http" Version="10.*" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.*"/>
     </ItemGroup>
 
 </Project>
