@@ -1027,14 +1027,4 @@ public sealed class SmartPlaylistRepositoryTests
         originalRule.PlayCountPlaylistRuleType.ShouldBe(PlayCountPlaylistRuleType.HigherThan);
         originalRule.PlayCount.ShouldBe(5u);
     }
-
-    private sealed class UnhandledTestRule : SmartPlaylistRule;
-
-    [Fact]
-    public void BuildRulePredicate_UnhandledRuleType_Throws()
-    {
-        var exception = Record.Exception(() => PlaylistRepository.BuildRulePredicate(new UnhandledTestRule(), userId: 1));
-
-        exception.ShouldBeOfType<InvalidOperationException>();
-    }
 }

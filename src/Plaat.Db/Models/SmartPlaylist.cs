@@ -41,7 +41,7 @@ public class SmartPlaylistRuleGroup
     public ICollection<SmartPlaylistRule> Rules { get; init; } = [];
 }
 
-public class SmartPlaylistRule
+public closed class SmartPlaylistRule
 {
     public uint Id { get; init; }
     public uint GroupId { get; init; }

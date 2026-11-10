@@ -199,12 +199,4 @@ public sealed class SmartPlaylistRulePredicateTests
 
         Matches(new StarsPlaylistRule { StarsRuleMatchType = StarsPlaylistRuleType.Equals, Stars = 5 }, track).ShouldBeFalse();
     }
-
-    [Fact]
-    public void UnknownRuleType_Throws()
-    {
-        Should.Throw<InvalidOperationException>(() => PlaylistRepository.BuildRulePredicate(new UnknownRule(), UserId));
-    }
-
-    private sealed class UnknownRule : SmartPlaylistRule;
 }
